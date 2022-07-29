@@ -105,10 +105,10 @@ analytics:
 # Site Author
 author:
   name             : "Hillagoon"
-  avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  avatar           : "/assets/images/profile.jpeg"
   bio              : "데이터를 저장 중입니다...."
   location         : "South Korea"
-  email            :
+  email            : "simwch90@gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
