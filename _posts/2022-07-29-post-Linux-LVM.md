@@ -1,6 +1,6 @@
 ---
 title: "Linux LVM 설정"
-date: 2022-07-29T22:54:00-00:00
+last_modified_at: 2022-07-29T22:54:00-00:00
 categories:
   - Linux
 tags:
