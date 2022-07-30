@@ -298,7 +298,7 @@ UUID=f7e8b2cc-f587-49d9-a280-02483f4f082e /boot                   ext4    defaul
 UUID=54bc1f42-ab3d-4048-9c0b-1c5655dc583e /os ext4      defaults        0 0
 UUID=f4ca6e6a-68ea-4016-bb63-dbd0c308336e /os1 ext4     defaults        0 0
 UUID=ae4a229c-9ff3-4e22-9633-9faa993bb64f /NFS  ext4    defaults        0 0
-UUID=b7b0931f-df6a-41ab-a309-6dc34a467982 /test  xfs    defaults        0 0 <-- 
+UUID=b7b0931f-df6a-41ab-a309-6dc34a467982 /test  xfs    defaults        0 0 <-- 대상
 ```
 
 ## 주의 사항
@@ -341,7 +341,7 @@ tmpfs                628M  4.6M  623M   1% /run/user/0
 
 ## 스왑 설정
 사전에 파티션을 만든 /dev/sde2 를 스왑 메모리로 사용하도록 아래와 같이 진행   
-swapon 전/후의 Swap 메모리 total이 증가된 것을 확인 할 수 있었다.   
+swapon 전/후의 Swap 메모리 total이 증가된 것을 확인가능하다.   
 ```
 [root@master ~]# mkswap /dev/sde2
 Setting up swapspace version 1, size = 500 MiB (524283904 bytes)
@@ -512,12 +512,12 @@ ext 시리즈의 경우는 resize2fs 명령어로 확장을 시도하면 된다.
 
 
 ### 볼륨 구조 확인
-** 작업 전 **   
+**작업 전**   
 vgroup (lv)   
 ㄴexample (vg)   
   ㄴ/dev/sde1 (pv)   
   
-** 작업 후 **   
+**작업 후**   
 vgroup (lv)   
 ㄴexample (vg)   
   ㄴ/dev/sde1 (pv)   
