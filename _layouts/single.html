@@ -102,6 +102,17 @@ layout: default
   for(var i=0;i<container.length;i++){
     var wrapper=document.createElement('li')
         wrapper.className='postnav_wrapper'
+    
+    if(container[i].nodeName == "H1"){
+      wrapper.className += "postnav_h1"
+    }
+    else if(container[i].nodeName == "H2"){
+      wrapper.className += "postnav_h1"
+    }
+    else if(container[i].nodeName == "H3"){
+      wrapper.className += "postnav_h3"
+    }
+    
     var a_tag=document.createElement('a');
         a_tag.className='postnav_list'
         a_tag.href=`#${container[i].id}`;
