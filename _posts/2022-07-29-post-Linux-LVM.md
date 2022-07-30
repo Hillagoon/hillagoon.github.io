@@ -213,7 +213,7 @@ vgroup (lv)
   ㄴ/dev/sde1 (pv)   
   
 
-### 파일 시스템 구성
+### FS - 파일 시스템 구성
 mkfs.* 명령어로 각 파일 시스템 종류에 따라 사용 가능 하다.   
 아래 참조   
 ```
@@ -301,7 +301,7 @@ UUID=ae4a229c-9ff3-4e22-9633-9faa993bb64f /NFS  ext4    defaults        0 0
 UUID=b7b0931f-df6a-41ab-a309-6dc34a467982 /test  xfs    defaults        0 0 <-- 대상
 ```
 
-### 주의 사항
+### !! 주의 사항
 마운트 테스트는 꼭 해보고 지나가자.   
 /etc/fstab 설정 정보에 에러가 있을 경우, 당장은 문제가 없겠지만   
 재부팅시 무한이 되지않을 수 있다.   
@@ -419,7 +419,7 @@ sde                  8:64   0    1G  0 disk
 
 기존 그룹에 새로운 하드디스크 /dev/sdf1 을 추가해 보자.
 
-### 볼륨 구성
+### 볼륨 확장
 ```
 [root@master ~]# pvcreate /dev/sdf1 
   Physical volume "/dev/sdf1" successfully created.
