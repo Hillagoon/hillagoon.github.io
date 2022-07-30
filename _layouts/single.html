@@ -117,7 +117,7 @@ layout: default
       var a_tag=document.createElement('a');
           a_tag.className='postnav_list'
           a_tag.href=`#${container[i].id}`;
-          a_tag.textContent=`${container[i].textContent}`;
+          a_tag.textContent=`${container[i].textContent.replace('Permalink','')}`;
 
       wrapper.append(a_tag)
       postnav.append(wrapper)
