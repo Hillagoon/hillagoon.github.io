@@ -1014,6 +1014,199 @@ Failed to delete 1 of 1 images.
 ```
 
 # 6. 스토리지 구성
-# 7. 배치 관리
+## 6.1 오브젝트 스토리지
+**컨테이너 생성**
+```
+[student@workstation ~(operator1-finance)]$ openstack container create \
+> finance-container1
++-------------------+--------------------+-------------+
+| account           | container          | x-trans-id  |
++-------------------+--------------------+-------------+
+| AUTH_c0cbb...e5cd | finance-container1 | tx41...4d72 |
++-------------------+--------------------+-------------+
+```
+
+**컨테이너 리스트**
+```
+[student@workstation ~(operator1-finance)]$ openstack container list
++--------------------+
+| Name               |
++--------------------+
+| finance-cdr        |
+| finance-container1 |
++--------------------+
+```
+
+**파일 업로드**
+```
+[student@workstation ~(operator1-finance)]$ openstack object create \
+> finance-container1/finance-data finance-rules
++---------------+---------------------------------+-------------+
+| object        | container                       | etag        |
++---------------+---------------------------------+-------------+
+| finance-rules | finance-container1/finance-data | d41d...427e |
++---------------+---------------------------------+-------------+
+```
+
+**finance-cdr 컨테이너 오브젝트 리스트**
+```
+[student@workstation ~(operator1-finance)]$ openstack object list \
+> finance-cdr
++----------------------+
+| Name                 |
++----------------------+
+| cdr//tmp/cdr.19Jun20 |
++----------------------+
+
+```
+
+**오브젝트 세부정보**
+```
+[student@workstation ~(operator1-finance)]$ openstack object show \
+> finance-cdr cdr//tmp/cdr.19Jun20
++----------------+----------------------------------------+
+| Field          | Value                                  |
++----------------+----------------------------------------+
+| account        | AUTH_c0cbb4890bcd45828bf31dc1d64fe5cd  |
+| container      | finance-cdr                            |
+| content-length | 10610                                  |
+| content-type   | application/octet-stream               |
+| etag           | 598d1e6b4f0a3583244e1b4e09b49fe5       |
+| last-modified  | Fri, 19 Jun 2020 08:44:54 GMT          |
+| object         | cdr//tmp/cdr.19Jun20                   |
++----------------+----------------------------------------+
+```
+
+**오브젝트 다운로드**
+```
+[student@workstation ~(operator1-finance)]$ openstack object save \
+> --file /tmp/cdr.txt finance-cdr cdr//tmp/cdr.19Jun20
+[student@workstation ~(operator1-finance)]$ cat /tmp/cdr.txt
+725bed67-0293-41c7-bc5a-eff9115108f6|7805589022|4115767947|2016-03-04T02:06:49.795+05:30|2016-03-04T02:09:08.950+05:30|VOICE|0.78949857|ANSWERED
+...output omitted...
+```
+
+**NFS 공유 스토리지 - 타입생성**
+```
+[student@workstation ~(operator1-finance)]$ manila type-create cephfstype false
++----------------------+--------------------------------------+
+| Property             | Value                                |
++----------------------+--------------------------------------+
+| ID                   | 6cdeb359-a353-4d7d-b50a-a3b55b713338 |
+| Name                 | cephfstype                           |
+| Visibility           | public                               |
+| is_default           | -                                    |
+| required_extra_specs | driver_handles_share_servers : False |
+| optional_extra_specs |                                      |
+| Description          | None                                 |
++----------------------+--------------------------------------+
+```
+
+**NFS 공유 스토리지 - 공유생성**
+```
+[student@workstation ~(developer1-finance)]$ manila create \
+> --name finance-share1 --share-type cephfstype cephfs 1
++----------------------+--------------------------------------+
+| Property             | Value                                |
++----------------------+--------------------------------------+
+| id                   | d2ad3b20-d0a2-4734-91de-f425f9964189 |
+| size                 | 1                                    |
+| availability_zone    | None                                 |
+| created_at           | 2020-07-02T09:07:11.000000           |
+| status               | creating                             |
+| name                 | finance-share1                       |
+...output omitted...
+[student@workstation ~(developer1-finance)]$ manila list \
+> --columns Name,'Share Proto',Status,'Share Type Name'
++----------------+-------------+-----------+-----------------+
+| Name           | Share Proto | Status    | Share Type Name |
++----------------+-------------+-----------+-----------------+
+| finance-share1 | CEPHFS      | available | cephfstype      |
++----------------+-------------+-----------+-----------------+
+```
+
+**cephx 유저 키 파일 생성**
+```
+[root@controller0 ~]# podman exec -t \
+> ceph-mon-controller0 ceph --name=client.manila \
+> --keyring=/etc/ceph/ceph.client.manila.keyring \
+> auth get-or-create client.cloud-user > /root/cloud-user.keyring
+```
+
+**인스턴스로 파일 복사**
+```
+[student@workstation manila(developer1-finance)]$ scp \
+> {cloud-user.keyring,ceph.conf} cloud-user@172.25.250.122:
+Warning: Permanently added '172.25.250.122' (ECDSA) to the list of known hosts.
+cloud-user.keyring    100%   70    43.5KB/s   00:00
+ceph.conf             100%  941   729.7KB/s   00:00
+```
+
+**공유 접근 권한 할당**
+```
+[student@workstation ~(developer1-finance)]$ manila access-allow \
+> finance-share1 cephx cloud-user
++--------------+--------------------------------------+
+| Property     | Value                                |
++--------------+--------------------------------------+
+| id           | cb7c11f1-b710-45b9-8762-a34ae334fc2b |
+| share_id     | 4e099421-8733-4cf2-9af6-7159b7d24a37 |
+| access_level | rw                                   |
+| access_to    | cloud-user                           |
+| access_type  | cephx                                |
+| state        | queued_to_apply                      |
+| access_key   | None                                 |
+| created_at   | 2020-07-02T12:05:19.000000           |
+| updated_at   | None                                 |
+| metadata     | {}                                   |
++--------------+--------------------------------------+
+[student@workstation ~(developer1-finance)]$ manila access-list \
+> finance-share1 --columns access_to,access_level,state
++------------+--------------+--------+
+| Access_To  | Access_Level | State  |
++------------+--------------+--------+
+| cloud-user | rw           | active |
++------------+--------------+--------+
+```
+
+**공유 액세스 포인트**
+```
+[student@workstation ~]$ source ~/developer1-finance-rc
+[student@workstation ~(developer1-finance)]$ manila share-export-location-list \ 
+> finance-share1 --columns Path
++------------------------------------------------------------------------+
+| Path                                                                   |
++------------------------------------------------------------------------+
+| 172.24.3.1:6789:/volumes/_nogroup/019cc044-1f71-43d5-bd6d-2b30817b1e57 |
++------------------------------------------------------------------------+
+```
+
+**인스턴스 설정**
+```
+[root@finance-server6 ~]# curl -s -f \
+> -o /etc/yum.repos.d/ceph.repo http://materials.example.com/ceph.repo
+[root@finance-server6 ~]# yum install ceph-fuse
+...output omitted...
+Is this ok [y/d/N]: y
+...output omitted...
+Complete!
+
+[root@finance-server6 ~]# ceph-fuse /mnt/ceph/ \
+> --id=cloud-user --conf=/home/cloud-user/ceph.conf \
+> --keyring=/home/cloud-user/cloud-user.keyring \
+> --client-mountpoint=/volumes/_nogroup/cea022a9-c00c-4003-b6f3-8fea2a49bd5f
+ 2020-07-02 08:27:39.600 7f22c17d7040 -1 init, newargv = 0x555b64a4e460 newargc=7
+ ceph-fuse[11810]: starting ceph client
+ ceph-fuse[11810]: starting fuse
+[root@finance-server6 ~]# df -Th
+...output omitted...
+ceph-fuse      fuse.ceph-fuse  1.0G     0  1.0G   0% /mnt/ceph
+```
+# 마지막으로
+정리하면서 느끼는거지만 오픈스택 정말 어려운것 같다.  
+어떻게 시험 합격했는지 모르겠다...  
+관리자 관점에서도 어려운데 솔루션 생각하면 네트워크 설계는 덤이라  
+가능하면 퍼블릭 클라우드 사용하는게 정신건강에 좋을것 같다.
+
 # 참고자료
-- RHEL CL110, CL210
+- RHLS CL110, CL210
