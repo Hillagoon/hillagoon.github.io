@@ -5,8 +5,7 @@ categories:
   - Linux
 tags:
   - Linux
-  - LVM
-  - Storage
+  - 
 ---
 
 # LVM
@@ -114,7 +113,7 @@ Syncing disks.
 ```
 
 ### 결과확인
-아래와 같이 sde1,2 로 파티션이 나누어 분할된 것을 확인 할 수 있다.   
+아래와 같이 sde1,2 로 파티션이 분할된 것을 확인 할 수 있다.   
 ```
 [root@master ~]# fdisk -l /dev/sde
 Disk /dev/sde: 1 GiB, 1073741824 bytes, 2097152 sectors
@@ -173,6 +172,7 @@ vgcreate 로 물리 볼륨 그룹 구성
 
 /dev/sde1을 물리 볼륨화(pv)   
 example 이라는 물리 볼륩 그룹(vg)에 물리 볼륨(pv) 할당   
+
 ```
 [root@master ~]# pvcreate /dev/sde1 
   Physical volume "/dev/sde1" successfully created.
@@ -193,13 +193,8 @@ example 이라는 물리 볼륩 그룹(vg)에 물리 볼륨(pv) 할당
 
 ## 논리 볼륨 구성
 lvcreate 로 논리 볼륨 구성   
--l (length) 에 100%FREE 를 지정하면 남은 공간 100%를 지정 할 수 있다.   
+-l (length) 에 '100%FREE' 를 지정하면 남은 공간 100%를 지정 할 수 있다.   
 -n (name) 논리 볼륨 이름 지정   
-
-지금까지의 구조   
-vgroup (lv)   
-ㄴexample (vg)   
-  ㄴ/dev/sde1 (pv)   
   
 ```
 [root@master ~]# lvcreate -l 100%FREE -n vgroup example
@@ -211,6 +206,12 @@ vgroup (lv)
   swap   cl      -wi-ao----   2.00g                                                    
   vgroup example -wi-a----- 496.00m                                                    
 ```
+
+지금까지의 구조   
+vgroup (lv)   
+ㄴexample (vg)   
+  ㄴ/dev/sde1 (pv)   
+  
 
 ## 파일 시스템 구성
 mkfs.* 명령어로 각 파일 시스템 종류에 따라 사용 가능 하다.   
@@ -232,8 +233,10 @@ log      =internal log           bsize=4096   blocks=1368, version=2
          =                       sectsz=512   sunit=0 blks, lazy-count=1
 realtime =none                   extsz=4096   blocks=0, rtextents=0
 ```
-mkfs.xfs /dev/example/vgroup   
-디렉토리의 구조가 /dev/example*(vg)/vgroup*(lv)   
+
+mkfs.xfs /dev/example/vgroup   << 
+대상 볼륨 /dev/example**(vg)**/vgroup**(lv)**   
+논리 볼륨을 대상으로 지정을 하고있음을 알 수 있다.  
 
 ## 마운트 테스트
 루트(/) 아래에 test디렉토리 생성후 마운트를 해본다.
@@ -268,13 +271,15 @@ NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 /dev/sde1: UUID="wiP3O2-wnOV-TEYU-uqHj-MOfz-HOb0-Wo1L96" TYPE="LVM2_member" PARTUUID="df4044fe-01"
 /dev/mapper/cl-root: UUID="03a7cd11-90c9-4bda-bc52-f77b5c2667d2" TYPE="xfs"
 /dev/mapper/cl-swap: UUID="194dd349-5a88-4a70-8f70-12d13b0fd415" TYPE="swap"
-/dev/mapper/example-vgroup: UUID="b7b0931f-df6a-41ab-a309-6dc34a467982" TYPE="xfs"
+/dev/mapper/example-vgroup: UUID="b7b0931f-df6a-41ab-a309-6dc34a467982" TYPE="xfs" <-- 대상
 /dev/sde2: PARTUUID="df4044fe-02"
 ```
 
 /etc/fstab 에 장치 정보 추가   
-형식은 아래 더블쿼테이션("") 부분 정도만 기억해도 충분하다.   
-UUID="id" "mount_point" "partition_type" defaults 0 0   
+형식은 아래 더블쿼테이션("") 부분 정도만 기억해도 충분하다. 
+아래와 같이 두 가지 방법으로 설정할 수 있다.
+1. UUID="id" "mount_point" "partition_type" defaults 0 0   
+2. "device"  "mount_point" "partition_type" defaults 0 0   
 
 ```
 [root@master ~]# vi /etc/fstab
@@ -293,21 +298,29 @@ UUID=f7e8b2cc-f587-49d9-a280-02483f4f082e /boot                   ext4    defaul
 UUID=54bc1f42-ab3d-4048-9c0b-1c5655dc583e /os ext4      defaults        0 0
 UUID=f4ca6e6a-68ea-4016-bb63-dbd0c308336e /os1 ext4     defaults        0 0
 UUID=ae4a229c-9ff3-4e22-9633-9faa993bb64f /NFS  ext4    defaults        0 0
-UUID=b7b0931f-df6a-41ab-a309-6dc34a467982 /test  xfs    defaults        0 0
+UUID=b7b0931f-df6a-41ab-a309-6dc34a467982 /test  xfs    defaults        0 0 <-- 
 ```
 
-fstab 설정값 읽어 들이기   
+## 주의 사항
+마운트 테스트는 꼭 해보고 지나가자.   
+/etc/fstab 설정 정보에 에러가 있을 경우, 당장은 문제가 없겠지만   
+재부팅시 무한이 되지않을 수 있다.   
+
+** 정상 출력 **   
 ```
 [root@master ~]# mount -a
 [root@master ~]# 
 ```
-* 확인 작업 스킵 후 재부팅했을때 무한 부팅현상이 생길격우. 그럴경우 침착하게 리커버리모드로 진입해서 해당 설정을 제거하면 부팅가능함.   
 
-** 설정내용에 문제있을 경우 아래와 같이 출력됨   
+** 에러 출력 **   
 ```
 [root@master ~]# mount -a
 mount: /test: can't find UUID=ab7b0931f-df6a-41ab-a309-6dc34a467982.
 ```
+
+무한 부팅시 리커버리모드에서 해결 가능하다.   
+당황해서 포멧하는 일은 없도록 하자.   
+
 
 ## 마운트 확인   
 ```
@@ -323,12 +336,12 @@ tmpfs                3.1G     0  3.1G   0% /sys/fs/cgroup
 /dev/sdc1             20G   45M   19G   1% /os1
 tmpfs                628M  1.2M  627M   1% /run/user/42
 tmpfs                628M  4.6M  623M   1% /run/user/0
-/dev/mapper/example-vgroup  491M   29M  463M   6% /test
+/dev/mapper/example-vgroup  491M   29M  463M   6% /test <-- 인식된 내용
 ```
 
 ## 스왑 설정
-사전에 파티션을 만든 /dev/sde2 를 스왑 메모리로 사용하도록 아래와 같이 진행
-swapon 전/후의 Swap 메모리 total이 증가된 것을 확인 할 수 있었다.
+사전에 파티션을 만든 /dev/sde2 를 스왑 메모리로 사용하도록 아래와 같이 진행   
+swapon 전/후의 Swap 메모리 total이 증가된 것을 확인 할 수 있었다.   
 ```
 [root@master ~]# mkswap /dev/sde2
 Setting up swapspace version 1, size = 500 MiB (524283904 bytes)
@@ -338,7 +351,7 @@ no label, UUID=8bdc6289-6b5e-4941-8d3b-007523ed1464
 [root@master ~]# free -m
               total        used        free      shared  buff/cache   available
 Mem:           6272        4410         487          12        1374        1596
-Swap:          2047          17        2030
+Swap:          2047          17        2030 <-- 적용 전
 [root@master ~]# 
 [root@master ~]# 
 [root@master ~]# swapon /dev/sde2
@@ -347,7 +360,7 @@ Swap:          2047          17        2030
 [root@master ~]# free -m
               total        used        free      shared  buff/cache   available
 Mem:           6272        4410         486          12        1374        1595
-Swap:          2547          17        2530
+Swap:          2547          17        2530 <-- 적용 후 
 ```
 
 ## 자동 마운트 설정
@@ -370,10 +383,12 @@ UUID=54bc1f42-ab3d-4048-9c0b-1c5655dc583e /os ext4      defaults        0 0
 UUID=f4ca6e6a-68ea-4016-bb63-dbd0c308336e /os1 ext4     defaults        0 0
 UUID=ae4a229c-9ff3-4e22-9633-9faa993bb64f /NFS  ext4    defaults        0 0
 UUID=b7b0931f-df6a-41ab-a309-6dc34a467982 /test  xfs    defaults        0 0
-UUID=8bdc6289-6b5e-4941-8d3b-007523ed1464       swap    swap    defaults        0 0
+UUID=8bdc6289-6b5e-4941-8d3b-007523ed1464       swap    swap    defaults        0 0 <-- 추가된 내용
 ```
 
 ## 마운트 확인   
+mount -a 로 /etc/fstab을 읽어들여보자.  
+설정내용에 문제가 없다면 에러없이 진행될 것이다.
 ```
 [root@master ~]# mount -a
 [root@master ~]# 
@@ -425,9 +440,8 @@ sde                  8:64   0    1G  0 disk
 [root@master ~]# 
 ```
 
-df -h 명령어에 /dev/sdf1 이 보이지 않지만   
-lsblk에는 인식하고 있다.   
-df 명령어는 마운트된 장치에 대해서만 정보를 출력하기 때문이다.   
+이전과 다른 점이 있다면, vgextend lvextend 명령어를 사용한다는 점이다.   
+새로운 그룹을 만드는 것이 아닌, 기존 그룹에 추가한다는 점을 고려하자.   
 
 ```
 [root@master ~]# df -h
@@ -456,6 +470,10 @@ sdf                  8:80   0    1G  0 disk
 └─sdf1               8:81   0 1023M  0 part 
   └─example-vgroup 253:2    0  1.5G  0 lvm  /test
 ```
+
+df -h 명령어에 /dev/sdf1 이 보이지 않지만   
+lsblk에는 인식하고 있다.   
+df 명령어는 마운트된 장치에 대해서만 정보를 출력하기 때문이다.   
 
 ### 파일시스템 확장
 ```
@@ -487,19 +505,19 @@ tmpfs                       3.1G     0  3.1G   0% /sys/fs/cgroup
 tmpfs                       628M  1.2M  627M   1% /run/user/42
 tmpfs                       628M  4.6M  623M   1% /run/user/0
 ```
-파일 시스템을 새로 만들때는 mkfs.* 명령어를 사용했는데
-확장할때는 약간 다르다.
-xfs 파일시스템의 경우는 xfs_growfs 명령어로 확장을 시도하고,
-ext 시리즈의 경우는 resize2fs 명령어로 확장을 시도하면 된다.
+파일 시스템을 새로 만들때는 mkfs.* 명령어를 사용했는데   
+확장할때는 약간 다르다.   
+xfs 파일시스템의 경우는 xfs_growfs 명령어로 확장을 시도하고,   
+ext 시리즈의 경우는 resize2fs 명령어로 확장을 시도하면 된다.   
 
 
 ### 볼륨 구조 확인
-작업 전
+** 작업 전 **   
 vgroup (lv)   
 ㄴexample (vg)   
   ㄴ/dev/sde1 (pv)   
   
-작업 후
+** 작업 후 **   
 vgroup (lv)   
 ㄴexample (vg)   
   ㄴ/dev/sde1 (pv)   
