@@ -279,7 +279,7 @@ MyTest (부모)
 ]
 ```
 
-옵션 참고
+옵션 참고  
 --names : id를 name으로 변환하여 출력해준다.  
 --effective : 부모-자식구조에서 할당내용이 안보일수있다. 생각보다 중요하니 비교해보는것을 추천  
 
@@ -322,6 +322,7 @@ MyTest (부모)
 | reader   | developer1@MyCorp |       | sales@MyCorp   |        | False     |
 +----------+-------------------+-------+----------------+--------+-----------+
 ```
+
 ## 2.5. 할당량 관리
 **프로젝트 할당량보기**
 ```
@@ -347,6 +348,232 @@ MyTest (부모)
 ```
 
 # 3. 네트워크 관리
+## 3.1. 네트워크 기술개요
+## 3.2. 네트워크 관리
+**역할에 따른 출력**
+Member 역할일때  
+```
+[student@workstation ~(developer1-finance)]$ openstack network show \
+> finance-network1 --max-width 80
++---------------------------+--------------------------------------------------+
+| Field                     | Value                                            |
++---------------------------+--------------------------------------------------+
+...output omitted...
+| name                      | finance-network1                                 |
+| port_security_enabled     | True                                             |
+| project_id                | c0cbb4890bcd45828bf31dc1d64fe5cd                 |
+| provider:network_type     | None                                             |
+| provider:physical_network | None                                             |
+| provider:segmentation_id  | None                                             |
+| qos_policy_id             | None                                             |
+| revision_number           | 2                                                |
+| router:external           | Internal                                         |
+| segments                  | None                                             |
+| shared                    | False                                            |
+...output omitted...
+```
+
+Admin 역할일때  
+```
+[student@workstation ~(operator1-finance)]$ openstack network show \
+> finance-network1 --max-width 80
++---------------------------+--------------------------------------------------+
+| Field                     | Value                                            |
++---------------------------+--------------------------------------------------+
+...output omitted...
+| name                      | finance-network1                                 |
+| port_security_enabled     | True                                             |
+| project_id                | c0cbb4890bcd45828bf31dc1d64fe5cd                 |
+| provider:network_type     | geneve                                           |
+| provider:physical_network | None                                             |
+| provider:segmentation_id  | 95                                               |
+| qos_policy_id             | None                                             |
+| revision_number           | 2                                                |
+| router:external           | Internal                                         |
+| segments                  | None                                             |
+| shared                    | False                                            |
+| status                    | ACTIVE                                           |
+| subnets                   | 66b8efce-51d5-48ca-8e5f-bbef8b5ef58f             |
+...output omitted...
+```
+역할에 따라 정보가 제한되는것을 알 수 있다.  
+
+**서브넷 정보출력**
+```
+[student@workstation ~(operator1-finance)]$ openstack subnet show \
+> 66b8efce-51d5-48ca-8e5f-bbef8b5ef58f --max-width 80
++-------------------+----------------------------------------------------------+
+| field            | value                                                    |
++-------------------+----------------------------------------------------------+
+| allocation_pools  | 192.168.1.2-192.168.1.254                                |
+| cidr              | 192.168.1.0/24                                           |
+| created_at        | 2020-06-10T14:46:52Z                                     |
+| description       |                                                          |
+| dns_nameservers   | 172.25.250.254                                           |
+| enable_dhcp       | True                                                     |
+| gateway_ip        | 192.168.1.1                                              |
+| host_routes       |                                                          |
+| id                | 66b8efce-51d5-48ca-8e5f-bbef8b5ef58f                     |
+| ip_version        | 4                                                        |
+| ipv6_address_mode | None                                                     |
+| ipv6_ra_mode      | None                                                     |
+| location          | cloud='', project.domain_id=,                            |
+|                   | project.domain_name='Example',                           |
+|                   | project.id='c0cbb4890bcd45828bf31dc1d64fe5cd',           |
+|                   | project.name='finance', region_name='regionOne', zone=   |
+| name              | finance-subnet1                                          |
+| network_id        | bcf96725-88f5-4a5e-a2c9-9e89fb7eb255                     |
+| prefix_length     | None                                                     |
+| project_id        | c0cbb4890bcd45828bf31dc1d64fe5cd                         |
+| revision_number   | 0                                                        |
+| segment_id        | None                                                     |
+| service_types     |                                                          |
+| subnetpool_id     | None                                                     |
+| tags              |                                                          |
+| updated_at        | 2020-06-10T14:46:52Z                                     |
++-------------------+----------------------------------------------------------+
+```
+
+**네트워크 정보출력**
+```
+[student@workstation ~(operator1-finance)]$ openstack network show \
+> provider-datacentre --max-width 80
++---------------------------+--------------------------------------------------+
+| Field                     | Value                                            |
++---------------------------+--------------------------------------------------+
+...output omitted...
+| name                      | provider-datacentre                              |
+| port_security_enabled     | True                                             |
+| project_id                | b04181074c884a89acc6469595599083                 |
+| provider:network_type     | flat                                             |
+| provider:physical_network | datacentre                                       |
+| provider:segmentation_id  | None                                             |
+| qos_policy_id             | None                                             |
+| revision_number           | 2                                                |
+| router:external           | External                                         |
+| segments                  | None                                             |
+| shared                    | True                                             |
+| status                    | ACTIVE                                           |
+| subnets                   | 655df137-b2e3-4e3d-9b52-98221b7abf24             |
+| id                        | ef95203b-7c9f-46c0-b328-e51aa7729798             |
+...output omitted...
+```
+provider-datacentre 네트워크의 정보  
+```
+provider:network_type     | flat        
+provider:physical_network | datacentre  
+router:external           | External   
+shared                    | True 
+subnets                   | 655df137-b2e3-4e3d-9b52-98221b7abf24
+id                        | ef95203b-7c9f-46c0-b328-e51aa7729798
+```
+
+**서브넷 정보**
+```
+[student@workstation ~(operator1-finance)]$ openstack subnet show \
+> 655df137-b2e3-4e3d-9b52-98221b7abf24 --max-width 80
++-------------------+----------------------------------------------------------+
+| Field             | Value                                                    |
++-------------------+----------------------------------------------------------+
+| allocation_pools  | 172.25.250.101-172.25.250.189                            |
+| cidr              | 172.25.250.0/24                                          |
+| created_at        | 2020-04-19T11:05:12Z                                     |
+| description       |                                                          |
+| dns_nameservers   | 172.25.250.254                                           |
+| enable_dhcp       | False                                                    |
+| gateway_ip        | 172.25.250.254                                           |
+| host_routes       |                                                          |
+| id                | 655df137-b2e3-4e3d-9b52-98221b7abf24                     |
+...output omitted...
+```
+ [655df137-b2e3-4e3d-9b52-98221b7abf24] 서브넷 정보 확인  
+ ```
+ allocation_pools  | 172.25.250.101-172.25.250.189
+ dns_nameservers   | 172.25.250.254
+ gateway_ip        | 172.25.250.254   
+ ```
+   
+controller에서 확인  
+```
+[root@controller0 ~]# ovs-vsctl show
+Bridge br-ex
+    fail_mode: standalone
+    Port br-ex
+         Interface br-ex
+             type: internal
+    Port "eth2"
+         Interface "eth2"
+    Port "patch-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798-to-br-int"
+         Interface "patch-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798-to-br-int"
+             type: patch
+             options: {peer="patch-br-int-to-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798"}
+```
+브릿지 br-ex에 소속된 포트 3개  
+- br-ex, Internal 타입
+- eth2, Physical 타입
+- patch-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798-to-br-int, patch타입
+
+patch 인터페이스는 아래와 같은 명명규칙으로 관리된다.  
+patch-provnet-"network id"-to-"connected port"  
+
+```
+Bridge br-int
+    fail_mode: secure
+    Port "ovn-0102a3-0"
+        Interface "ovn-0102a3-0"
+             type: geneve
+             options: {csum="true", key=flow, remote_ip="172.24.2.12"}
+    Port "patch-br-int-to-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798"
+        Interface "patch-br-int-to-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798"
+             type: patch
+             options: {peer="patch-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798-to-br-int"}
+    Port "ovn-1af225-0"
+        Interface "ovn-1af225-0"
+             type: geneve
+             options: {csum="true", key=flow, remote_ip="172.24.2.6"}
+    Port "o-hm0"
+        Interface "o-hm0"
+             type: internal
+    Port "ovn-a643d0-0"
+        Interface "ovn-a643d0-0"
+             type: geneve
+             options: {csum="true", key=flow, remote_ip="172.24.2.2"}
+...output omitted...
+```
+브릿지 br-int에 소속된 포트 5개  
+- ovn-0102a3-0, geneve타입
+- patch-br-int-to-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798, patch타입
+- ovn-1af225-0, geneve타입
+- o-hm0, Internal타입
+- ovn-a643d0-0, geneve타입
+
+patch 인터페이스는 아래와 같은 명명규칙으로 관리된다.  
+patch-provnet-"network id"-to-"connected port"  
+  
+이를 통해 알 수 있는 점  
+```
++----+----+
+| real-net| 
++----+----+
+     |  <- ???
+     |
+-----|----------    <- SDN과 물리 네트워크의 경계선
+     |
+     |  <- eth2
++----+----+
+| br-ex   | 
++----+----+
+     |  <- patch-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798-to-br-int
+     |     - network :   ef95203b-7c9f-46c0-b328-e51aa7729798 (provider-datacentre)
+     |     - subnet  :   655df137-b2e3-4e3d-9b52-98221b7abf24 (DHCP)
+     |
+     |
+     |  <- patch-br-int-to-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798
++----+----+
+| br-int  | 
++---------+
+```
+
 # 4. 리소스 관리
 # 5. 디스크 구성
 # 6. 스토리지 구성
