@@ -19,18 +19,19 @@ OpenStack은 수 많은 서비스들이 연동하여 가상화 환경을 제공�
 - 스토리지
 - 네트워크
 - 인증
+
 위와 같이 4가지 기능들이 서로 얽히고 얽혀서  
 클라우드 환경을 제공한다.  
 
 OpenStack의 각각의 컴포넌트는 이후 이어지는 내용을 참고.  
 
-## 1.1. Cinder
+**Cinder**
 블록 스토리지 서비스를 담당한다.  
 쉽게 정의하면 하드디스크 제공을 한다고 생각하면 된다.  
 
 AWS의 EBS (Elastic Block Storage)에 해당한다.  
 
-## 1.2. Glance
+**Glance**
 이미지 서비스를 담당한다.  
 이후 설명할 Nova에서 새로운 인스턴스를 실행하면,  
 Glance를 통해 OS 이미지를 제공받는다.  
@@ -40,7 +41,7 @@ Glance에서는 이미지 버전 관리, 제공한다.
 AWS의 EC2 인스턴스 생성하는 단계에서 이미지선택하는 화면이 나오는데  
 이는 Glance에 해당하는 서비스가 연동되어 있다.  
 
-## 1.3. Heat
+**Heat**
 오케스트레이션 서비스를 담당한다.  
 오케스트레이션이란 확장/축소를 조절한다는 의미로서 사용된다.  
 OpenStack 뿐만아니라 다른 플랫폼(AWS,GCP,Kubernetes)에서도  
@@ -51,12 +52,12 @@ Heat는 yaml코드로 관리된다.
 
 AWS의 AutoScale에 해당한다.  
 
-## 1.4. Horizon
+**Horizon**
 웹 기반의 GUI 인터페이스를 담당한다.  
 
 AWS의 EC2 Management Console에 해당한다.  
 
-## 1.5. Ironic
+**Ironic**
 베어 메탈 프로비저닝 서비스를 담당한다.  
 
 베어 메탈이란 물리 서버를 의미한다.  
@@ -64,7 +65,7 @@ Ironic을 통해 하드웨어를 컨트롤 할 수 있다.
 
 AWS의 EC2 Bare Metal 에 해당한다.  
 
-## 1.6. Keystone
+**Keystone**
 ID서비스를 담당한다.  
 
 모든 OpenStack 서비스에 인증 및 권한 부여/확인을 하며,  
@@ -74,7 +75,7 @@ LDAP 연동을 통해 조직의 IDM을 통합할 수 있다.
 
 AWS의 iam,Organizations 에 해당한다.  
 
-## 1.7. Neutron
+**Neutron**
 네트워크 서비스를 담당한다.  
 네트워크, 서브넷, 유동IP를 만들 수 있으며  
 이는 곳 OpenStack에서 SDN 역할을 한다.  
@@ -83,7 +84,7 @@ OpenvSwitch, OVN이 함께 사용된다.
 
 AWS의 VPC 에 해당한다.  
 
-## 1.8. Nova
+**Nova**
 컴퓨팅 서비스를 담당한다.  
 Nova를 통해 가상환경을 제공 받을수 있으며,  
 하이퍼바이저에 libvirtd, qemu, kvm을 사용한다.  
@@ -92,19 +93,19 @@ NoVNC와 연동하여 웹을 통한 인스턴스 연결이 가능하다.
 
 AWS의 EC2 에 해당한다.  
 
-## 1.9. Swift
+**Swift**
 오브젝트 스토리지를 제공한다.  
 데이터 백업에 유용하다.  
 
 AWS의 S3에 해당한다.  
 
-## 1.10. Ceph
+**Ceph**
 분산 데이터 오브젝트 저장소 역할을 한다.  
 Ceph 클러스터링을 통해 데이터 손실을 최소화 하고 용량 확장이 쉽다.  
 
 AWS의 S3에 해당한다.  
 
-## 1.11. Manila
+**Manila**
 공유 파일 시스템 서비스로서 파일 공유 서버 역할을 한다.  
 쉽게 말하면 공유 서버로서 이용 가능하다.  
 
@@ -113,7 +114,7 @@ Manila - Ceph 를 연동하면 기존 Nova 인스턴스를 재활용하여
 
 AWS의 EFS(Elastic File System) 에 해당한다.  
 
-## 1.12. TripleO
+**TripleO**
 OpenStack의 배포를 담당한다.  
 배포 툴로 Ansible,Puppet을 사용하며,
 기존에 짜여진 yaml코드를 재활용하여
@@ -234,7 +235,7 @@ demo-org
 ```
   
 **역할 오버라이팅**  
-프로젝트가 부모-자식 구조일때, 하위 프로젝트(자식) 포함 할당하기 
+프로젝트가 부모-자식 구조일때, 하위 프로젝트(자식) 포함 할당하기  
 MyTest (부모)  
 ㄴDevelopment (자식)  
   
@@ -281,7 +282,7 @@ MyTest (부모)
   
 옵션 참고  
 --names : id를 name으로 변환하여 출력해준다.  
---effective : 부모-자식구조에서 할당내용이 안보일수있다. 생각보다 중요하니 비교해보는것을 추천  
+--effective : 부모-자식구조에서 지정해줘야 할당내용이 보인다. 생각보다 중요하니 비교해보는것을 추천  
 
 
 **역할 삭제**
@@ -350,8 +351,8 @@ MyTest (부모)
 # 3. 네트워크 관리
 ## 3.1. 네트워크 기술개요
 ## 3.2. 네트워크 관리
-**역할에 따른 출력**
-Member 역할일때  
+### 3.2.1. 역할에 따른 출력차이
+**Member 역할일때**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack network show \
 > finance-network1 --max-width 80
@@ -373,7 +374,7 @@ Member 역할일때
 ...output omitted...
 ```
   
-Admin 역할일때  
+**Admin 역할일때**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack network show \
 > finance-network1 --max-width 80
@@ -397,7 +398,8 @@ Admin 역할일때
 ...output omitted...
 ```
 역할에 따라 정보가 제한되는것을 알 수 있다.  
-  
+
+### 3.2.2. 네트워크 
 **서브넷 정보출력**
 ```
 [student@workstation ~(operator1-finance)]$ openstack subnet show \
@@ -434,7 +436,7 @@ Admin 역할일때
 +-------------------+----------------------------------------------------------+
 ```
   
-**네트워크 정보검색**
+**네트워크 정보검색**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack network show \
 > provider-datacentre --max-width 80
@@ -469,7 +471,7 @@ subnets                   | 655df137-b2e3-4e3d-9b52-98221b7abf24
 id                        | ef95203b-7c9f-46c0-b328-e51aa7729798
 ```
 
-**서브넷 정보검색**
+**서브넷 정보검색**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack subnet show \
 > 655df137-b2e3-4e3d-9b52-98221b7abf24 --max-width 80
@@ -576,12 +578,14 @@ patch-provnet-"network id"-to-"connected port"
 +---------+
 ```
 
+### 3.2.3. 네트워크 관리하기
 **네트워크 생성**
 ```
 [student@workstation ~(developer1-finance)]$ openstack network create \
 > MyNet
 ...output omitted...
 ```
+
 **서브넷 생성**
 ```
 [student@workstation ~(developer1-finance)]$ openstack subnet create \
@@ -589,6 +593,130 @@ patch-provnet-"network id"-to-"connected port"
 > --network MyNet \
 > MyNet-Sub192_168_4_0
 ...output omitted...
+```
+
+**라우터 생성**
+```
+[student@workstation ~(developer1-finance)]$ openstack router create \
+> finance-router1
++-------------------------+------------------------------------------------------+
+| Field                   | Value                                                |
++-------------------------+------------------------------------------------------+
+| admin_state_up          | UP                                                   |
+| availability_zone_hints | None                                                 |
+| availability_zones      | None                                                 |
+| created_at              | 2020-07-14T16:00:45Z                                 |
+| description             |                                                      |
+| external_gateway_info   | null                                                 |
+| flavor_id               | None                                                 |
+| id                      | 6ea98144-c243-41cc-8064-c8281821c6d0                 |
+| location                | cloud='', project.domain_id=,                        |
+|                         | project.domain_name='Example',                       |
+|                         | project.id='f76fd09fa0b14a678b5b61f9e3ec3c87',       |
+|                         | project.name='finance', region_name='regionOne',     |
+|                         | zone=                                                |
+| name                    | finance-router1                                      |
+| project_id              | f76fd09fa0b14a678b5b61f9e3ec3c87                     |
+| revision_number         | 0                                                    |
+| routes                  |                                                      |
+| status                  | ACTIVE                                               |
+| tags                    |                                                      |
+| updated_at              | 2020-07-14T16:00:45Z                                 |
++-------------------------+------------------------------------------------------+
+```
+
+**라우터 리스트출력**
+```
+[student@workstation ~(developer1-finance)]$ openstack router list
++--------------------+-----------------+--------+-------+---------------------+
+| ID                 | Name            | Status | State | Project             |
++--------------------+-----------------+--------+-------+---------------------+
+| 6ea98144-c243-41cc | finance-router1 | ACTIVE | UP    | f76fd09fa0b14a678b5 |
+| -8064-c8281821c6d0 |                 |        |       | b61f9e3ec3c87       |
++--------------------+-----------------+--------+-------+---------------------+
+```
+
+**서브넷 연결**
+```
+[student@workstation ~(developer1-finance)]$ openstack router add subnet \
+> finance-router1 finance-subnet3
+```
+
+**게이트웨이 설정**
+```
+[student@workstation ~(developer1-finance)]$ openstack router set \
+> --external-gateway provider-datacentre \
+> finance-router1
+```
+
+**유동IP 생성**
+```
+[student@workstation ~(developer1-finance)]$ openstack floating ip create \
+> provider-datacentre
++---------------------+----------------------------------------------------------+
+| Field               | Value                                                    |
++---------------------+----------------------------------------------------------+
+| created_at          | 2020-07-14T16:48:40Z                                     |
+| description         |                                                          |
+| dns_domain          |                                                          |
+| dns_name            |                                                          |
+| fixed_ip_address    | None                                                     |
+| floating_ip_address | 172.25.250.125                                           |
+| floating_network_id | ef95203b-7c9f-46c0-b328-e51aa7729798                     |
+| id                  | cda15c6c-3325-49f5-a05a-740761aec953                     |
+| location            | Munch({'cloud': '', 'region_name': 'regionOne', 'zone':  |
+|                     | None, 'project': Munch({'id':                            |
+|                     | 'f76fd09fa0b14a678b5b61f9e3ec3c87', 'name': 'finance',   |
+|                     | 'domain_id': None, 'domain_name': 'Example'})})          |
+| name                | 172.25.250.125                                           |
+| port_details        | None                                                     |
+| port_id             | None                                                     |
+| project_id          | f76fd09fa0b14a678b5b61f9e3ec3c87                         |
+| qos_policy_id       | None                                                     |
+| revision_number     | 0                                                        |
+| router_id           | None                                                     |
+| status              | DOWN                                                     |
+| subnet_id           | None                                                     |
+| tags                | []                                                       |
+| updated_at          | 2020-07-14T16:48:40Z                                     |
++---------------------+----------------------------------------------------------+
+```
+
+**유동IP 할당**
+```
+[student@workstation ~(developer1-finance)]$ openstack server add floating ip \
+> finance-server1 172.25.250.125
+```
+
+이를 통해 알 수 있는 점  
+```
++----+----+
+| real-net| 
++----+----+
+     |  <- ???
+     |
+-----|----------    <- SDN과 물리 네트워크의 경계선
+     |
+     |  <- ??? neutron 설정에 정의된 물리 인터페이스
++----+----+-----------+
+| provider-datacentre | 
++----+----------------+
+     ^
+     | 
+     | 
+     | 
+     |  external-gateway 
++----+----+---------+
+| finance-router1   | 
++----+--------------+
+     |  subnet
+     |
+     |
+     |
+     v
++----+----+--------+
+| finance-subnet3  | 
++---------+--------+
 ```
 
 # 4. 리소스 관리
@@ -601,7 +729,6 @@ patch-provnet-"network id"-to-"connected port"
 > rhel8-dbsmall
 ...output omitted...
 ```
-
   
 **이미지 정보출력**
 ```
@@ -1015,6 +1142,7 @@ Failed to delete 1 of 1 images.
 
 # 6. 스토리지 구성
 ## 6.1 오브젝트 스토리지
+### 6.1.1. SWIFT
 **컨테이너 생성**
 ```
 [student@workstation ~(operator1-finance)]$ openstack container create \
@@ -1086,6 +1214,7 @@ Failed to delete 1 of 1 images.
 ...output omitted...
 ```
 
+### 6.1.2. Manila 
 **NFS 공유 스토리지 - 타입생성**
 ```
 [student@workstation ~(operator1-finance)]$ manila type-create cephfstype false
@@ -1205,8 +1334,24 @@ ceph-fuse      fuse.ceph-fuse  1.0G     0  1.0G   0% /mnt/ceph
 # 마지막으로
 정리하면서 느끼는거지만 오픈스택 정말 어려운것 같다.  
 어떻게 시험 합격했는지 모르겠다...  
-관리자 관점에서도 어려운데 솔루션 생각하면 네트워크 설계는 덤이라  
-가능하면 퍼블릭 클라우드 사용하는게 정신건강에 좋을것 같다.
+관리자 관점에서도 어려운데 솔루션은 얼마나 어려울지...  
+가능하면 퍼블릭 클라우드 사용하는게 정신건강에 좋을것 같다.  
+
+# 참고사항 - CL210 과정에 추가되는것들
+- RC파일관리
+- IDM통합
+- 컨트롤 플레인 백업
+- 베어메탈 관리
+- 토큰관리
+- 보안관리
+- 네트워크 관리
+- 이미지 커스터마이징 및 배포
+- 모니터링
+- HEAT 배포
+- 트러블슈팅
+
+기회가 된다면 다뤄보도록 하겠습니다.  
+기회가 된다면...  
 
 # 참고자료
-- RHLS CL110, CL210
+- RHLS CL110
