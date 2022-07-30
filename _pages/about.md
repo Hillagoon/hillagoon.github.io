@@ -16,15 +16,12 @@ title: "About"
 >**11월**  
 >> - 출생   
 
-
 ## 2012년  
 >**3월**  
 >> - 경상공업고등학교 - 입학  
 
-
 ## 2013년  
 >> - 기능올림픽 대회 - 로봇부문 지방대회 금상  
-
 
 ## 2015년  
 >**2월**  
@@ -33,19 +30,17 @@ title: "About"
 >**4월**  
 >> - 일본전자전문학교(Japan Electronics College) - 입학  
 
-
 ## 2017년  
 >**3월**  
 >> - 일본전자전문학교(Japan Electronics College) - 졸업   
->> 
+> 
 >**4월**  
 >> - Secuavail Inc - 입사  
-
 
 ## 2018년  
 >**5월**  
 >> - Secuavail Inc - 퇴사  
->> 
+> 
 >**7월**  
 >> - Japan Techno Co., Ltd - 입사  
 >> - 大和総研(Daiwa Institute of Research Ltd.) - 파견  
