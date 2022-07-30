@@ -62,9 +62,6 @@ layout: default
 
       {% include post_pagination.html %}
     </div>
-    <nav class="post-nav">
-      <span>목차</span>
-    </nav>
     {% if jekyll.environment == 'production' and site.comments.provider and page.comments %}
       {% include comments.html %}
     {% endif %}
@@ -94,8 +91,12 @@ layout: default
     </div>
   {% endif %}
 </div>
+
+<nav class="post-nav">
+  <span>목차</span>
+</nav>
 <script>
-  var container = document.querySelectorAll('.post > .entry h1,h2');
+  var container = document.querySelectorAll('.page__content > h1,h2');
   var postnav   = document.querySelector('.post-nav');
   
   for(var i=0;i<container.length;i++){
