@@ -12,23 +12,58 @@ title: "About"
 
 # TimeLine
 ---
-### 1996년 11월 출생
-
-### 2012년 3월 ~ 2015년 2월 경상공업고등학교  
-- 2013년 기능올림픽 대회 - 로봇부문 지방대회 금상  
-
-### 2015년 4월 ~ 2017년 3월 일본전자전문학교 (Japan Electronics College)  
-- 네트워크 시큐리티과  
-
-### 2017년 4월 ~ 2018년 5월 Secuavail Inc  
-- SOC 운용 엔지니어  
-
-### 2018년 7월 ~ 2019년 11월 Japan Techno Co., Ltd  
-- 네트워크 엔지니어  
-  - 大和総研(Daiwa Institute of Research Ltd.) 에서 온프레미스 클라우드환경 인프라 마이그레이션 프로젝트를 진행.  
-
-### 2020년 9월 ~ 2022년 1월 (육군 제2작전사령부, 대구, 대한민국)  
-- 네트워크 운용병  
+>**1996년**  
+>> 11월 출생   
+>
+>**2012년**  
+>> 3월  
+>> - 경상공업고등학교 - 입학  
+>
+>**2013년**  
+>> - 기능올림픽 대회 - 로봇부문 지방대회 금상  
+>
+>**2015년**
+>> 2월  
+>> - 경상공업고등학교 - 졸업  
+>
+>**2015년**  
+>> 4월  
+>> - 일본전자전문학교(Japan Electronics College) - 입학  
+>
+>**2017년**  
+>> 3월  
+>> - 일본전자전문학교(Japan Electronics College) - 졸업   
+>> 
+>> 4월  
+>> - Secuavail Inc - 입사  
+>
+>**2018년**  
+>> 5월  
+>> - Secuavail Inc - 퇴사  
+>> 
+>> 7월  
+>> - Japan Techno Co., Ltd - 입사  
+>> - 大和総研(Daiwa Institute of Research Ltd.) - 파견  
+>> - 온프레미스 클라우드환경 인프라 마이그레이션 프로젝트 수행.  
+>
+>**2019년**
+>> 11월  
+>> - Japan Techno Co., Ltd - 퇴사  
+>  
+>**2020년**  
+>> 7월  
+>> - 군 - 입대  
+>> - 네트워크 운용병  
+>> 
+>> 
+>> 9월  
+>> - 육군 제2작전사령부 - 배치  
+>
+>**2022년**
+>> 1월  
+>> - 군 - 제대  
+>>
+>
 
 # Certifications  
 ---
@@ -48,36 +83,36 @@ title: "About"
 
 ## History  
 ### 2015년
->### 4월  
+>**4월**  
 >> - CCNA - Cisco Certified Network Associate  
 > 
->### 10월  
+>**10월**  
 >> - LPIC 1  
 > 
->### 12월  
+>**12월**  
 >> - LPIC 2  
 
 ### 2017년
->### 12월  
+>**12월**  
 >> - LPIC 3 - 304 (Virtualization and High Availability)  
 
 ### 2018년
->### 3월  
+>**3월**  
 >> - CCNP - Cisco Certified Network Professional  
 
 ### 2022년
->### 3월  
+>**3월**  
 >> - RHCSA - Red Hat Certified System Administrator  
 > 
->### 4월  
+>**4월**  
 >> - RHCE - Red Hat Certified Engineer  
 > 
->### 5월  
+>**5월**  
 >> - RHCS - Red Hat Certified Specialist in Advanced Automation  
 >> - RHCS - Red Hat Certified Specialist in Cloud Infrastructure  
 >> - RHCS - Red Hat Certified Specialist in Containers and Kubernetes  
 > 
->### 6월  
+>**6월**  
 >> - RHCS - Red Hat Certified Specialist in OpenShift Administration  
 >> - RHCS - Red Hat Certified Specialist in Ansible Networking Automation  
 >> - RHCA - Red Hat Certified Architect in Infrastructure  
