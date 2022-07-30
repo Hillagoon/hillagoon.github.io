@@ -92,19 +92,19 @@ NoVNC와 연동하여 웹을 통한 인스턴스 연결이 가능하다.
 
 AWS의 EC2 에 해당한다.  
 
-## 1.8. Swift
+## 1.9. Swift
 오브젝트 스토리지를 제공한다.  
 데이터 백업에 유용하다.  
 
 AWS의 S3에 해당한다.  
 
-## 1.9. Ceph
+## 1.10. Ceph
 분산 데이터 오브젝트 저장소 역할을 한다.  
 Ceph 클러스터링을 통해 데이터 손실을 최소화 하고 용량 확장이 쉽다.  
 
 AWS의 S3에 해당한다.  
 
-## 1.10. Manila
+## 1.11. Manila
 공유 파일 시스템 서비스로서 파일 공유 서버 역할을 한다.  
 쉽게 말하면 공유 서버로서 이용 가능하다.  
 
@@ -113,7 +113,7 @@ Manila - Ceph 를 연동하면 기존 Nova 인스턴스를 재활용하여
 
 AWS의 EFS(Elastic File System) 에 해당한다.  
 
-## 1.11. TripleO
+## 1.12. TripleO
 OpenStack의 배포를 담당한다.  
 배포 툴로 Ansible,Puppet을 사용하며,
 기존에 짜여진 yaml코드를 재활용하여
@@ -128,28 +128,27 @@ AWS에서 비슷하게는 Terraform에 해당한다.
 [user@workstation ~(admin)]$ openstack project create \
 > --description "Demo Org Project" --domain demo-org demo-project
 ```
-
+  
 부모-자식 구조로 관리할 수도 있다.  
 ```
 [user@workstation ~(admin)]$ openstack project create \
 > --description "Demo Org Project" --domain demo-org-children --parent demo-org
 ```
-
-demo-org
-ㄴdemo-org-children
-
+  
+demo-org  
+ㄴdemo-org-children  
+  
 **프로젝트 삭제**
-
 ```
 [user@workstation ~(admin)]$ openstack project delete \
 > --domain demo-org demo-project
 ```
-
+  
 **프로젝트 리스트출력**
 ```
 [user@master ~(admin)]$ openstack project list
 ```
-
+  
 ## 2.2. 도메인 관리
 **도메인 생성**
 ```
@@ -166,13 +165,13 @@ demo-org
 | tags        | []                               |
 +-------------+----------------------------------+
 ```
-
+  
 **도메인 삭제**
 ```
 [student@workstation ~(admin)]$ openstack domain delete MyCorp
 [student@workstation ~(admin)]$
 ```
-
+  
 **도메인 리스트출력**
 ```
 [student@workstation ~(admin)]$ openstack domain list
@@ -182,7 +181,7 @@ demo-org
 | 8350ad8d9e7d4f3aacfdd9a2a7d9a45e | MyCorp     | True    | My Corp Domain     |
 +----------------------------------+------------+---------+--------------------+
 ```
-
+  
 ## 2.3. 유저관리
 **유저 생성**
 ```
@@ -201,7 +200,7 @@ demo-org
 | password_expires_at | None                             |
 +---------------------+----------------------------------+
 ```
-
+  
 **유저 삭제**
 ```
 [student@workstation ~(admin)]$ openstack user delete \
@@ -212,7 +211,7 @@ demo-org
 | 3c348c3a943346eba2a810776f31cd02 | developer1 |
 +----------------------------------+------------+
 ```
-
+  
 **유저 리스트출력**
 ```
 [student@workstation ~(admin)]$ openstack user list --domain MyCorp
@@ -222,7 +221,7 @@ demo-org
 | 3c348c3a943346eba2a810776f31cd02 | developer1 |
 +----------------------------------+------------+
 ```
-
+  
 ## 2.4. 역할관리
 **역할 할당**  
 ```
@@ -233,18 +232,19 @@ demo-org
 > --project sales \
 > member
 ```
-
-프로젝트가 부모-자식 구조일때, 하위 프로젝트(자식) 포함 할당하기  
+  
+**역할 오버라이팅**  
+프로젝트가 부모-자식 구조일때, 하위 프로젝트(자식) 포함 할당하기 
 MyTest (부모)  
 ㄴDevelopment (자식)  
-
+  
 ```
 [student@workstation ~(operator5-finance)]$ openstack role add \
 > --project-domain Example --project MyTest \
 > --user-domain Example --user developer1 --inherited admin
 ```
 **--inherited** 옵션을 잊지말자.  
-
+  
 ```
 [student@workstation ~(operator5-finance)]$ openstack role assignment list \
 > --project Development --names --effective -f json
@@ -278,7 +278,7 @@ MyTest (부모)
   }
 ]
 ```
-
+  
 옵션 참고  
 --names : id를 name으로 변환하여 출력해준다.  
 --effective : 부모-자식구조에서 할당내용이 안보일수있다. 생각보다 중요하니 비교해보는것을 추천  
@@ -372,7 +372,7 @@ Member 역할일때
 | shared                    | False                                            |
 ...output omitted...
 ```
-
+  
 Admin 역할일때  
 ```
 [student@workstation ~(operator1-finance)]$ openstack network show \
@@ -397,7 +397,7 @@ Admin 역할일때
 ...output omitted...
 ```
 역할에 따라 정보가 제한되는것을 알 수 있다.  
-
+  
 **서브넷 정보출력**
 ```
 [student@workstation ~(operator1-finance)]$ openstack subnet show \
@@ -433,8 +433,8 @@ Admin 역할일때
 | updated_at        | 2020-06-10T14:46:52Z                                     |
 +-------------------+----------------------------------------------------------+
 ```
-
-**네트워크 정보출력**
+  
+**네트워크 정보검색**
 ```
 [student@workstation ~(operator1-finance)]$ openstack network show \
 > provider-datacentre --max-width 80
@@ -458,6 +458,7 @@ Admin 역할일때
 | id                        | ef95203b-7c9f-46c0-b328-e51aa7729798             |
 ...output omitted...
 ```
+
 provider-datacentre 네트워크의 정보  
 ```
 provider:network_type     | flat        
@@ -468,7 +469,7 @@ subnets                   | 655df137-b2e3-4e3d-9b52-98221b7abf24
 id                        | ef95203b-7c9f-46c0-b328-e51aa7729798
 ```
 
-**서브넷 정보**
+**서브넷 정보검색**
 ```
 [student@workstation ~(operator1-finance)]$ openstack subnet show \
 > 655df137-b2e3-4e3d-9b52-98221b7abf24 --max-width 80
@@ -508,6 +509,7 @@ Bridge br-ex
              type: patch
              options: {peer="patch-br-int-to-provnet-ef95203b-7c9f-46c0-b328-e51aa7729798"}
 ```
+  
 브릿지 br-ex에 소속된 포트 3개  
 - br-ex, Internal 타입
 - eth2, Physical 타입
@@ -574,8 +576,443 @@ patch-provnet-"network id"-to-"connected port"
 +---------+
 ```
 
+**네트워크 생성**
+```
+[student@workstation ~(developer1-finance)]$ openstack network create \
+> MyNet
+...output omitted...
+```
+**서브넷 생성**
+```
+[student@workstation ~(developer1-finance)]$ openstack subnet create \
+> --subnet-range 192.168.4.0/24 \
+> --network MyNet \
+> MyNet-Sub192_168_4_0
+...output omitted...
+```
+
 # 4. 리소스 관리
+## 4.1. 이미지 
+**이미지 등록**
+```
+[student@workstation ~(developer1-finance)]$ openstack image create \ 
+> --disk-format qcow2 \
+> --file ~/Downloads/osp-small.qcow2 \
+> rhel8-dbsmall
+...output omitted...
+```
+
+  
+**이미지 정보출력**
+```
+[student@workstation ~(developer1-finance)]$ openstack image show \
+> rhel8-dbsmall --max-width 80
++------------------+-----------------------------------------------------------+
+| Field            | Value                                                     |
++------------------+-----------------------------------------------------------+
+| checksum         | 34c6c63549f342af9c95b52d23372fda                          |
+| container_format | bare                                                      |
+| created_at       | 2020-05-12T12:19:00Z                                      |
+| disk_format      | qcow2                                                     |
+| file             | /v2/images/5ad936aa-8384-4b31-b7ab-2f0daee8168a/file      |
+| id               | 5ad936aa-8384-4b31-b7ab-2f0daee8168a                      |
+| min_disk         | 0                                                         |
+| min_ram          | 0                                                         |
+| name             | rhel8-dbsmall                                             |
+| owner            | 4a08af8fda6a4609ad293613e0e637e3                          |
+| properties       | direct_url='rbd://63e5c992-81fb-11ea-bc11-52540001fac8/im |
+|                  | ages/5ad936aa-8384-4b31-b7ab-2f0daee8168a/snap',          |
+|                  | locations='[{'url': 'rbd://63e5c992-81fb-11ea-bc11-525400 |
+|                  | 01fac8/images/5ad936aa-8384-4b31-b7ab-2f0daee8168a/snap', |
+|                  | 'metadata': { }}]', os_hash_algo='sha512', os_hash_value=' |
+|                  | 189b477467b2d7e2c7b34bfc7a0713f2f1ec802659ab48d9dba3e13d3 |
+|                  | e8aae56ce622a48f7d3176ec86d6a928cb75e17db2eb76d3117baf677 |
+|                  | 47f3853a905809', os_hidden='False'                        |
+| protected        | False                                                     |
+| schema           | /v2/schemas/image                                         |
+| size             | 1086128128                                                |
+| status           | active                                                    |
+| tags             |                                                           |
+| updated_at       | 2020-05-12T12:19:13Z                                      |
+| virtual_size     | None                                                      |
+| visibility       | shared                                                    |
++------------------+-----------------------------------------------------------+
+```
+
+**이미지 설정변경**
+```
+[student@workstation ~(developer1-finance)]$ openstack image set \
+> --protected \
+> --min-disk 10 \
+> --min-ram 1024 \  <- M단위
+> rhel8-dbsmall
+[student@workstation ~(developer1-finance)]$ openstack image show \
+> rhel8-dbsmall --max-width 80
++------------------+-----------------------------------------------------------+
+| Field            | Value                                                     |
++------------------+-----------------------------------------------------------+
+| checksum         | 34c6c63549f342af9c95b52d23372fda                          |
+| container_format | bare                                                      |
+| created_at       | 2020-05-12T12:19:00Z                                      |
+| disk_format      | qcow2                                                     |
+| file             | /v2/images/5ad936aa-8384-4b31-b7ab-2f0daee8168a/file      |
+| id               | 5ad936aa-8384-4b31-b7ab-2f0daee8168a                      |
+| min_disk         | 10                                                        |
+| min_ram          | 1024                                                         |
+| name             | rhel8-dbsmall                                             |
+| owner            | 4a08af8fda6a4609ad293613e0e637e3                          |
+| properties       | direct_url='rbd://63e5c992-81fb-11ea-bc11-52540001fac8/im |
+|                  | ages/5ad936aa-8384-4b31-b7ab-2f0daee8168a/snap',          |
+|                  | locations='[{'url': 'rbd://63e5c992-81fb-11ea-bc11-525400 |
+|                  | 01fac8/images/5ad936aa-8384-4b31-b7ab-2f0daee8168a/snap', |
+|                  | 'metadata': { }}]', os_hash_algo='sha512', os_hash_value=' |
+|                  | 189b477467b2d7e2c7b34bfc7a0713f2f1ec802659ab48d9dba3e13d3 |
+|                  | e8aae56ce622a48f7d3176ec86d6a928cb75e17db2eb76d3117baf677 |
+|                  | 47f3853a905809', os_hidden='False'                        |
+| protected        | True                                                      |
+| schema           | /v2/schemas/image                                         |
+| size             | 1086128128                                                |
+| status           | active                                                    |
+| tags             |                                                           |
+| updated_at       | 2020-05-12T12:27:08Z                                      |
+| virtual_size     | None                                                      |
+| visibility       | shared                                                    |
++------------------+-----------------------------------------------------------+
+```
+
+**protect모드에서 삭제시도**  
+```
+[student@workstation ~(developer1-finance)]$ openstack image delete rhel8-dbsmall
+Failed to delete image with name or ID 'rhel8-dbsmall': HTTP 403 Forbidden: Image 5ad936aa-8384-4b31-b7ab-2f0daee8168a is protected and cannot be deleted.
+Failed to delete 1 of 1 images.
+```
+**--unprotected** 옵션으로 보호모드를 해제해야 삭제가 가능하다.  
+
+## 4.2. 플레이버
+```
+[student@workstation ~(operator1-finance)]$ openstack flavor create \
+> --vcpus 2 \
+> --ram 1024 \
+> --disk 10 \
+> --ephemeral 2 \
+> --swap 1024 \
+> db-flavor
++----------------------------+--------------------------------------+
+| Field                      | Value                                |
++----------------------------+--------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                |
+| OS-FLV-EXT-DATA:ephemeral  | 2                                    |
+| disk                       | 10                                   |
+| id                         | 74434d48-41b4-45c7-987a-8d332f3086db |
+| name                       | db-flavor                           |
+| os-flavor-access:is_public | True                                 |
+| properties                 |                                      |
+| ram                        | 1024                                 |
+| rxtx_factor                | 1.0                                  |
+| swap                       | 1024                                 |
+| vcpus                      | 2                                    |
++----------------------------+--------------------------------------+
+```
+옵션  
+- vcpus     : vcpu 할당 개수
+- ram       : ram 메모리 할당 용량
+- disk      : root disk(메인디스크) 할당 용량 *예시: Windows C:\ 드라이버*
+- ephemeral : ephemeral disk(임시 디스크) 할당 용량 *예시: Windows D:\ 드라이버*
+- swap      : 스왑 메모리 할당 용량
+
+**인스턴스 시작**
+```
+[student@workstation ~(developer1-finance)]$ openstack server create \
+> --image rhel8 \
+> --flavor default \
+> --nic net-id=MyNet \
+> --wait Test-Instance
++-----------------------------+----------------------------------------+
+| Field                       | Value                                  |
++-----------------------------+----------------------------------------+
+| OS-DCF:diskConfig           | MANUAL                                 |
+| OS-EXT-AZ:availability_zone | nova                                   |
+| OS-EXT-STS:power_state      | Running                                |
+| OS-EXT-STS:task_state       | None                                   |
+| OS-EXT-STS:vm_state         | active                                 |
+| OS-SRV-USG:launched_at      | 2020-05-12T09:01:31.000000             |
+| OS-SRV-USG:terminated_at    | None                                   |
+| accessIPv4                  |                                        |
+| accessIPv6                  |                                        |
+| addresses                   | MyNet=192.168.2.140                    |
+| adminPass                   | 7KDuUWwXKJae                           |
+| config_drive                |                                        |
+| created                     | 2020-05-12T09:00:55Z                   |
+| flavor                      | default (8ff1...8c7)                   |
+| hostId                      | 353d7...381fa5aa8a3bc0ebac0a1b         |
+| id                          | 39b1...7e6                             |
+| image                       | rhel8 (2b4d...c71)                     |
+| key_name                    | None                                   |
+| name                        | Test-Instance                          |
+| progress                    | 0                                      |
+| project_id                  | 4a08af8fda6a4609ad293613e0e637e3       |
+| properties                  |                                        |
+| security_groups             | name='default'                         |
+| status                      | ACTIVE                                 |
+| updated                     | 2020-05-12T09:01:32Z                   |
+| user_id                     | b3bf7...fd45d45a1470bce0adcce1a5c3570  |
+| volumes_attached            |                                        |
++-----------------------------+----------------------------------------+
+```
+
+**인스턴스 콘솔접속**
+```
+[student@workstation ~(developer1-finance)]$ openstack console url \
+> show Test-Instance
++-------+-------------------------------------------------+
+| Field | Value                                           |
++-------+-------------------------------------------------+
+| type  | novnc                                           |
+| url   | http://172.25.250.50:6080/vnc_auto.html?path=...|
++-------+-------------------------------------------------+
+```
+
 # 5. 디스크 구성
+## 5.1 임시 디스크
+**flavor - ephemeral**
+```
+[student@workstation ~(operator1-finance)]$ openstack flavor create \
+> --ram 2048 \
+> --disk 10 \
+> --ephemeral 5 \
+> --vcpus 2 \
+> --public default-with-ephemeral -f json
+{
+  "OS-FLV-DISABLED:disabled": false,
+  "OS-FLV-EXT-DATA:ephemeral": 5,
+  "disk": 10,
+  "id": "ae1de0aa-1ae6-45ec-9a56-d22cfc82174a",
+  "name": "default-with-ephemeral",
+  "os-flavor-access:is_public": true,
+  "properties": "",
+  "ram": 2048,
+  "rxtx_factor": 1.0,
+  "swap": "",
+  "vcpus": 2
+}
+```
+## 5.2 영구 디스크
+**이미지 볼륨 생성**
+```
+[student@workstation ~(developer1-finance)]$ openstack volume create \
+> --size 10 \
+> --image rhel8 \
+> finance-vol-rhel8
++---------------------+---------------------------------------+
+| Field               | Value                                 |
++---------------------+---------------------------------------+
+| attachments         | []                                    |
+| availability_zone   | nova                                  |
+| bootable            | false                                 |
+| consistencygroup_id | None                                  |
+| created_at          | 2020-05-29T05:23:12.000000            |
+| description         | None                                  |
+| encrypted           | False                                 |
+| id                  | b013db6e-78b1-4378-81aa-ca36203cef79  |
+| multiattach         | False                                 |
+| name                | finance-vol-rhel8                     |
+| properties          |                                       |
+| replication_status  | None                                  |
+| size                | 10                                    |
+| snapshot_id         | None                                  |
+| source_volid        | None                                  |
+| status              | creating                              |
+| type                | tripleo                               |
+| updated_at          | None                                  |
+| user_id             | b3bf...77638121e0abd2a5e89fa85f663570 |
++---------------------+---------------------------------------+
+```
+
+**데이터 볼륨생성**
+```
+[student@workstation ~ (developer1-finance)]$ openstack volume create \ 
+> --size 1 finance-volume1
++---------------------+---------------------------------------------+
+| Field               | Value                                       |
++---------------------+---------------------------------------------+
+| attachments         | []                                          |
+| availability_zone   | nova                                        |
+| bootable            | false                                       |
+| consistencygroup_id | None                                        |
+| created_at          | 2020-05-28T07:58:34.000000                  |
+| description         | None                                        |
+| encrypted           | False                                       |
+| id                  | b017a769-9dbf-484d-8d04-74723445ffc7        |
+| multiattach         | False                                       |
+| name                | finance-volume1                             |
+| properties          |                                             |
+| replication_status  | None                                        |
+| size                | 1                                           |
+| snapshot_id         | None                                        |
+| source_volid        | None                                        |
+| status              | creating                                    |
+| type                | tripleo                                     |
+| updated_at          | None                                        |
+| user_id             | b3bf...6649e76fd45d45a1470bce0adcce1a5c3570 |
++---------------------+---------------------------------------------+
+```
+
+**볼륨 상태**
+```
+[student@workstation ~(developer1-finance)]$ openstack volume list \
+> -c Name -c Status
++-------------------+-----------+
+| Name              | Status    |
++-------------------+-----------+
+| finance-vol-rhel8 | available |
++-------------------+-----------+
+```
+
+**이미지 볼륨으로 인스턴스 시작하기**
+```
+[student@workstation ~(developer1-finance)]$ openstack server create \
+> --flavor default \
+> --nic net-id=finance-network1 \
+> --volume finance-vol-rhel8 \
+> finance-server10
++-----------------------------+--------------------------------------+
+| Field                       | Value                                |
++-----------------------------+--------------------------------------+
+| OS-DCF:diskConfig           | MANUAL                               |
+| OS-EXT-AZ:availability_zone |                                      |
+| OS-EXT-STS:power_state      | NOSTATE                              |
+| OS-EXT-STS:task_state       | scheduling                           |
+| OS-EXT-STS:vm_state         | building                             |
+| OS-SRV-USG:launched_at      | None                                 |
+| OS-SRV-USG:terminated_at    | None                                 |
+| accessIPv4                  |                                      |
+| accessIPv6                  |                                      |
+| addresses                   |                                      |
+| adminPass                   | rmcovAvLK8QK                         |
+| config_drive                |                                      |
+| created                     | 2020-05-29T05:30:26Z                 |
+| flavor                      | default (8ff1eecb...ec999a78c7)      |
+| hostId                      |                                      |
+| id                          | a992dd57-3b36-40ea-8b2f-8d2c3286e48b |
+| image                       |                                      |
+| key_name                    | None                                 |
+| name                        | finance-server10                     |
+| progress                    | 0                                    |
+| project_id                  | 4a08af8fda6a4609ad293613e0e637e3     |
+| properties                  |                                      |
+| security_groups             | name='default'                       |
+| status                      | BUILD                                |
+| updated                     | 2020-05-29T05:30:26Z                 |
+| user_id                     | b3bf...e89fa85f6649e76fd45d45a1470bce|
+| volumes_attached            |                                      |
++-----------------------------+--------------------------------------+
+```
+
+**할당 확인**
+```
+[student@workstation ~(developer1-finance)]$ openstack volume list \
+> -c Name -c Status
++-------------------+-----------+
+| Name              | Status    |
++-------------------+-----------+
+| finance-volume1   | available |
+| finance-vol-rhel8 | in-use    |
++-------------------+-----------+
+```
+
+**데이터 볼륨 할당**
+```
+[student@workstation ~ (developer1-finance)]$ openstack server add volume \
+> finance-server10 finance-volume1
+[student@workstation ~(developer1-finance)]$ 
+```
+
+**스냅샷 이미지 생성**
+```
+[student@workstation ~(developer1-finance)]$ openstack server image create \
+> --name finance-server10-snapshot \
+> --wait finance-server10
+
++------------------+-------------------------------------------------------------+
+| Field            | Value                                                       |
++------------------+-------------------------------------------------------------+
+| checksum         | d41d8cd98f00b204e9800998ecf8427e                            |
+| container_format | bare                                                        |
+| created_at       | 2020-06-22T02:53:24Z                                        |
+| disk_format      | qcow2                                                       |
+| file             | /v2/images/205b421d-8497-45e9-8155-9c7165e0b115/file        |
+| id               | 205b421d-8497-45e9-8155-9c7165e0b115                        |
+| min_disk         | 10                                                          |
+| min_ram          | 2048                                                        |
+| name             | finance-server10-snapshot                                   |
+...output omitted...
+| status           | active                                                      |
+| tags             |                                                             |
+| updated_at       | 2020-06-22T02:53:25Z                                        |
+| virtual_size     | None                                                        |
+| visibility       | private                                                     |
++------------------+-------------------------------------------------------------+
+```
+
+**스냅샷 이미지로 인스턴스 시작**
+```
+[student@workstation ~(developer1-finance)]$ openstack server create \
+> --image finance-server10-snapshot \
+> --flavor default \
+> --nic net-id=finance-network3 \
+> --wait \
+> finance-server2
+
++-----------------------------+--------------------------------------------------+
+| Field                       | Value                                            |
++-----------------------------+--------------------------------------------------+
+| OS-DCF:diskConfig           | MANUAL                                           |
+| OS-EXT-AZ:availability_zone | nova                                             |
+| OS-EXT-STS:power_state      | Running                                          |
+| OS-EXT-STS:task_state       | None                                             |
+| OS-EXT-STS:vm_state         | active                                           |
+| OS-SRV-USG:launched_at      | 2020-06-22T03:26:36.000000                       |
+| OS-SRV-USG:terminated_at    | None                                             |
+| accessIPv4                  |                                                  |
+| accessIPv6                  |                                                  |
+| addresses                   | finance-network3=192.168.3.167                   |
+| adminPass                   | uvR2QtcT4ZuC                                     |
+| config_drive                |                                                  |
+| created                     | 2020-06-22T03:26:26Z                             |
+| flavor                      | default (8ff1eecb-15b4-4f32-bb99-4dec999a78c7)   |
+| hostId                      | 270d29f8ba5e76c1fd80c56d592882a1138b5d12ad0f35a1 |
+|                             | 7eac7546                                         |
+| id                          | 253ff506-7d33-4269-8d29-49d897c2602c             |
+| image                       | finance-server1-snapshot                         |
+|                             | (205b421d-8497-45e9-8155-9c7165e0b115)           |
+| key_name                    | None                                             |
+| name                        | finance-server2                                  |
+| progress                    | 0                                                |
+| project_id                  | 3fe4ec06f5654a4d906a640d7f1a0457                 |
+| properties                  |                                                  |
+| security_groups             | name='default'                                   |
+| status                      | ACTIVE                                           |
+| updated                     | 2020-06-22T03:26:37Z                             |
+| user_id                     | b3bf77638121e0abd2a5e89fa85f6649e76fd45d45a1470b |
+|                             | ce0adcce1a5c3570                                 |
+| volumes_attached            | id='4053e1de-62bb-470a-8fc3-b6bbdaaa2590'        |
++-----------------------------+--------------------------------------------------+
+```
+
+**볼륨 스냅샷 제거**
+```
+[student@workstation ~(developer1-finance)]$ openstack volume snapshot list
++-----------------------+-----------------------+-------------+-----------+------+
+| ID                    | Name                  | Description | Status    | Size |
++-----------------------+-----------------------+-------------+-----------+------+
+| 53b88d27-2c10-4578-bf | snapshot for finance- |             | available |   10 |
+| ba-94f59bc04bb0       | server10-snapshot     |             |           |      |
++-----------------------+-----------------------+-------------+-----------+------+
+
+[student@workstation ~(developer1-finance)]$ openstack volume snapshot delete \
+> 53b88d27-2c10-4578-bfba-94f59bc04bb0
+```
+
 # 6. 스토리지 구성
 # 7. 배치 관리
 # 참고자료
