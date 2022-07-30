@@ -93,3 +93,22 @@ layout: default
     </div>
   {% endif %}
 </div>
+<nav class="post-nav">
+  <span>목차</span>
+</nav>
+<script>
+  var container = document.querySelectorAll('.post > .entry h1,h2');
+  var postnav   = document.querySelector('.post-nav');
+  
+  for(var i=0;i<container.length;i++){
+    var wrapper=document.createElement('li')
+        wrapper.className='postnav_wrapper'
+    var a_tag=document.createElement('a');
+        a_tag.className='postnav_list'
+        a_tag.href=`#${container[i].id}`;
+        a_tag.textContent=`${container[i].textContent}`;
+    
+    wrapper.append(a_tag)
+    postnav.append(wrapper)
+  }
+</script>
