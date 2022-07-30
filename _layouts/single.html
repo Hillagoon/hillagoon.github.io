@@ -96,29 +96,35 @@ layout: default
   <span>목차</span>
 </nav>
 <script>
-  var container = document.querySelectorAll('.e-content > h1,h2,h3');
-  var postnav   = document.querySelector('.post-nav');
-  
-  for(var i=0;i<container.length;i++){
-    var wrapper=document.createElement('li')
-        wrapper.className='postnav_wrapper'
-    
-    if(container[i].nodeName == "H1"){
-      wrapper.className += " postnav_h1"
+  function index_init(){
+    var container = document.querySelectorAll('.e-content > h1,h2,h3');
+    var postnav   = document.querySelector('.post-nav');
+
+    for(var i=0;i<container.length;i++){
+      var wrapper=document.createElement('li')
+          wrapper.className='postnav_wrapper'
+
+      if(container[i].nodeName == "H1"){
+        wrapper.className += " postnav_h1"
+      }
+      else if(container[i].nodeName == "H2"){
+        wrapper.className += " postnav_h2"
+      }
+      else if(container[i].nodeName == "H3"){
+        wrapper.className += " postnav_h3"
+      }
+
+      var a_tag=document.createElement('a');
+          a_tag.className='postnav_list'
+          a_tag.href=`#${container[i].id}`;
+          a_tag.textContent=`${container[i].textContent}`;
+
+      wrapper.append(a_tag)
+      postnav.append(wrapper)
     }
-    else if(container[i].nodeName == "H2"){
-      wrapper.className += " postnav_h2"
-    }
-    else if(container[i].nodeName == "H3"){
-      wrapper.className += " postnav_h3"
-    }
-    
-    var a_tag=document.createElement('a');
-        a_tag.className='postnav_list'
-        a_tag.href=`#${container[i].id}`;
-        a_tag.textContent=`${container[i].textContent}`;
-    
-    wrapper.append(a_tag)
-    postnav.append(wrapper)
   }
+    
+  window.onload = function(){
+    index_init();
+  };
 </script>
