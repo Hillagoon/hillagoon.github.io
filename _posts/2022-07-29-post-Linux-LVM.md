@@ -50,7 +50,7 @@ Device     Boot Start      End  Sectors Size Id Type
 
 
 ## 파티션 구성
-###LVM 으로 구성
+### LVM 으로 구성
 /dev/sde 를 LVM 저장 공간으로 만들기   
 ```
 [root@master ~]# fdisk /dev/sde
