@@ -1,5 +1,15 @@
 .post-nav {
     position: fixed;
     top: 150px;
-    right: 300px;
+    right: 250px;
+    font-size: 15px;
+    .postnav_h1 {
+        margin-left: 0px;
+    }
+    .postnav_h2 {
+        margin-left: 10px;
+    }
+    .postnav_h3 {
+        margin-left: 20px;
+    }
 }
