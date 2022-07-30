@@ -4,8 +4,7 @@ last_modified_at: 2022-07-29T22:54:00-00:00
 categories:
   - Linux
 tags:
-  - Linux
-  - 
+  - LVM
 ---
 
 # LVM
@@ -112,7 +111,7 @@ Calling ioctl() to re-read partition table.
 Syncing disks.
 ```
 
-### 결과확인
+### 파티션 확인
 아래와 같이 sde1,2 로 파티션이 분할된 것을 확인 할 수 있다.   
 ```
 [root@master ~]# fdisk -l /dev/sde
@@ -129,7 +128,7 @@ Device     Boot   Start     End Sectors  Size Id Type
 ```
 
 
-### 파티션 타입 코드
+## 파티션 타입 코드
 fdisk 명령어에서 타입 설정 모드에서  L - List 로 확인 할 수 있다.   
 ```
 Command (m for help): t
@@ -166,7 +165,8 @@ Hex code (type L to list all codes): L
 82  Linux swap  
 8e  Linux LVM   
 
-## 물리 볼륨 구성
+## 볼륨 구성
+### PV - 물리 볼륨 구성
 pvcreate 로 물리 볼륨 구성   
 vgcreate 로 물리 볼륨 그룹 구성   
 
@@ -191,7 +191,7 @@ example 이라는 물리 볼륩 그룹(vg)에 물리 볼륨(pv) 할당
   example   1   0   0 wz--n- 496.00m 496.00m
 ```
 
-## 논리 볼륨 구성
+### VG - 논리 볼륨 구성
 lvcreate 로 논리 볼륨 구성   
 -l (length) 에 '100%FREE' 를 지정하면 남은 공간 100%를 지정 할 수 있다.   
 -n (name) 논리 볼륨 이름 지정   
@@ -207,13 +207,13 @@ lvcreate 로 논리 볼륨 구성
   vgroup example -wi-a----- 496.00m                                                    
 ```
 
-지금까지의 구조   
+**지금까지의 구조**   
 vgroup (lv)   
 ㄴexample (vg)   
   ㄴ/dev/sde1 (pv)   
   
 
-## 파일 시스템 구성
+### 파일 시스템 구성
 mkfs.* 명령어로 각 파일 시스템 종류에 따라 사용 가능 하다.   
 아래 참조   
 ```
@@ -238,7 +238,7 @@ mkfs.xfs /dev/example/vgroup   <<
 대상 볼륨 /dev/example**(vg)**/vgroup**(lv)**   
 논리 볼륨을 대상으로 지정을 하고있음을 알 수 있다.  
 
-## 마운트 테스트
+### FS - 마운트 테스트
 루트(/) 아래에 test디렉토리 생성후 마운트를 해본다.
 아래와 같이 마운트 후 인식이 잘 되는 것을 확인 할 수 있다.
 ```
@@ -259,7 +259,7 @@ NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 └─sde2               8:66   0  500M  0 part 
 ```
 
-## 자동 마운트 설정   
+### FS - 자동 마운트 설정   
 장치ID 확인   
 ```
 [root@master ~]# blkid
@@ -301,18 +301,18 @@ UUID=ae4a229c-9ff3-4e22-9633-9faa993bb64f /NFS  ext4    defaults        0 0
 UUID=b7b0931f-df6a-41ab-a309-6dc34a467982 /test  xfs    defaults        0 0 <-- 대상
 ```
 
-## 주의 사항
+### 주의 사항
 마운트 테스트는 꼭 해보고 지나가자.   
 /etc/fstab 설정 정보에 에러가 있을 경우, 당장은 문제가 없겠지만   
 재부팅시 무한이 되지않을 수 있다.   
 
-** 정상 출력 **   
+**정상 출력**   
 ```
 [root@master ~]# mount -a
 [root@master ~]# 
 ```
 
-** 에러 출력 **   
+**에러 출력**   
 ```
 [root@master ~]# mount -a
 mount: /test: can't find UUID=ab7b0931f-df6a-41ab-a309-6dc34a467982.
@@ -322,7 +322,7 @@ mount: /test: can't find UUID=ab7b0931f-df6a-41ab-a309-6dc34a467982.
 당황해서 포멧하는 일은 없도록 하자.   
 
 
-## 마운트 확인   
+### LVM - 마운트 확인   
 ```
 [root@master ~]# df -h
 Filesystem           Size  Used Avail Use% Mounted on
@@ -339,7 +339,7 @@ tmpfs                628M  4.6M  623M   1% /run/user/0
 /dev/mapper/example-vgroup  491M   29M  463M   6% /test <-- 인식된 내용
 ```
 
-## 스왑 설정
+### SWAP - 스왑 설정
 사전에 파티션을 만든 /dev/sde2 를 스왑 메모리로 사용하도록 아래와 같이 진행   
 swapon 전/후의 Swap 메모리 total이 증가된 것을 확인가능하다.   
 ```
@@ -363,7 +363,7 @@ Mem:           6272        4410         486          12        1374        1595
 Swap:          2547          17        2530 <-- 적용 후 
 ```
 
-## 자동 마운트 설정
+### SWAP - 자동 마운트 설정
 이전 LVM 스텝에서 진행한 것과 동일하다.   
 ```
 [root@master ~]# vi /etc/fstab
@@ -386,7 +386,7 @@ UUID=b7b0931f-df6a-41ab-a309-6dc34a467982 /test  xfs    defaults        0 0
 UUID=8bdc6289-6b5e-4941-8d3b-007523ed1464       swap    swap    defaults        0 0 <-- 추가된 내용
 ```
 
-## 마운트 확인   
+### SWAP - 마운트 확인   
 mount -a 로 /etc/fstab을 읽어들여보자.  
 설정내용에 문제가 없다면 에러없이 진행될 것이다.
 ```
