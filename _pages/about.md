@@ -6,12 +6,10 @@ title: "About"
 ![고양고양](https://avatars.githubusercontent.com/u/63218097?v=4)
 
 # Profile  
----
 데브옵스엔지니어가 되고싶은 주니어 네트워크 엔지니어!  
-공부한 것들과 유용한 정보를 정리하는
+공부한 것들과 개인 프로젝트 등 정보를 정리하는 블로그 입니다.  
 
 ## TimeLine
----
 ### 1996년  
 >**11월**  
 >> - 출생   
@@ -68,7 +66,6 @@ title: "About"
 ### 현재  
 
 # Certifications  
----
 ## Cisco Certification
 <a href="https://www.credly.com/badges/7d904446-7329-4d53-93a4-df5be61c886f"><img src="https://images.credly.com/size/340x340/images/683783d8-eaac-4c37-a14d-11bd8a36321d/ccna_600.png" width=100 alt="CCNA"></a> 
 <a href="https://www.credly.com/badges/6fa81a01-e9cc-430c-9578-8c51b2fb0e2a"><img src="https://images.credly.com/size/340x340/images/706353b7-3a49-4e7b-80d6-ce80a597f580/cisco_ccnp_R_26S.png" width=100 alt="CCNP"></a>  
