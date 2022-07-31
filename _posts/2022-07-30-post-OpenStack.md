@@ -1,6 +1,6 @@
 ---
 title: "OpenStack"
-last_modified_at: 2022-07-30T16:40:00-00:00
+last_modified_at: 2022-07-31T13:30:00-00:00
 categories:
   - Linux
 tags:
@@ -9,7 +9,12 @@ tags:
   - Cloud
 ---
 
-# 오픈스택 소개
+# 들어가며
+![OpenStack Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/OpenStack%C2%AE_Logo_2016.svg/1200px-OpenStack%C2%AE_Logo_2016.svg.png "오픈스택 로고")
+
+오픈스택은 클라우드 환경 구축에 필요한 다양한 기술을 제공하는 강력한 플렛폼 중 하나이다.  
+이번 포스트에서는 RHLS - CL110 과정에서 배운 것을 빠르게 복습할 수 있도록 자료정리를 해보고자 한다.  
+
 # 1. 서비스
 ![OpenStack Platform](https://rol.redhat.com/rol/static/static_file_cache/cl110-16.1/intro/CL110-Service-Overview.png "오픈스택 서비스")  
 OpenStack은 수 많은 서비스들이 연동하여 가상화 환경을 제공한다. 
@@ -20,28 +25,68 @@ OpenStack은 수 많은 서비스들이 연동하여 가상화 환경을 제공�
 - 네트워크
 - 인증
 
-위와 같이 4가지 기능들이 서로 얽히고 얽혀서  
-클라우드 환경을 제공한다.  
+위와 같이 4가지 기능들이 서로 얽히고 얽혀서 클라우드 환경을 제공한다. 오픈스택의 주요 서비스는 아래와 같다.  
 
-OpenStack의 각각의 컴포넌트는 이후 이어지는 내용을 참고.  
+## 1.1. 핵심 서비스
+![OpenStack Services](https://docs.openstack.org/security-guide/_images/marketecture-diagram.png "오픈스택 핵심 서비스")
 
-**Cinder**
+**Cinder**  
 블록 스토리지 서비스를 담당한다.  
 쉽게 정의하면 하드디스크 제공을 한다고 생각하면 된다.  
 
-AWS의 EBS (Elastic Block Storage)에 해당한다.  
+상세 설명은 [블록 스토리지 서비스 개요](https://docs.openstack.org/mitaka/ko_KR/install-guide-rdo/common/get_started_block_storage.html)를 참조.  
 
-**Glance**
+**Glance**  
 이미지 서비스를 담당한다.  
 이후 설명할 Nova에서 새로운 인스턴스를 실행하면,  
 Glance를 통해 OS 이미지를 제공받는다.  
 
 Glance에서는 이미지 버전 관리, 제공한다.  
 
-AWS의 EC2 인스턴스 생성하는 단계에서 이미지선택하는 화면이 나오는데  
-이는 Glance에 해당하는 서비스가 연동되어 있다.  
+상세 설명은 [이미지 서비스 개요](https://docs.openstack.org/mitaka/ko_KR/install-guide-rdo/common/get_started_image_service.html)를 참조.  
 
-**Heat**
+**Horizon**  
+웹 기반의 GUI 인터페이스를 담당한다.  
+
+AWS의 EC2 Management Console에 해당한다.  
+
+**Keystone**  
+ID서비스를 담당한다.  
+
+모든 OpenStack 서비스에 인증 및 권한 부여/확인을 하며,  
+사용자, 도메인, 역할, 프로젝트를 관리하는 역할을 한다.  
+
+LDAP 연동을 통해 조직의 IDM을 통합할 수 있다.  
+
+상세 설명은 [Identity 서비스 개요](https://docs.openstack.org/mitaka/ko_KR/install-guide-rdo/common/get_started_identity.html)
+
+**Neutron**  
+네트워크 서비스를 담당한다.  
+네트워크, 서브넷, 유동IP를 만들 수 있으며  
+이는 곳 OpenStack에서 SDN 역할을 한다.  
+
+OpenvSwitch, OVN이 함께 사용된다.  
+
+상세 설명은 [네트워킹 서비스 개요](https://docs.openstack.org/mitaka/ko_KR/install-guide-rdo/common/get_started_networking.html)를 참조.  
+
+**Nova**  
+컴퓨팅 서비스를 담당한다.  
+Nova를 통해 가상환경을 제공 받을수 있으며,  
+하이퍼바이저에 libvirtd, qemu, kvm을 사용한다.  
+
+NoVNC와 연동하여 웹을 통한 인스턴스 연결이 가능하다.  
+
+상세 설명은 [Compute 서비스 개요](https://docs.openstack.org/mitaka/ko_KR/install-guide-rdo/common/get_started_compute.html)를 참조.  
+
+**Swift**  
+![Swift 아키텍쳐](https://cdn.ttgtmedia.com/rms/onlineImages/storage-openstack_object_storage_mobile.png "Swift 아키텍쳐")
+오브젝트 스토리지를 제공한다. 오브젝트 는 데이터로서 저장 할 수 있는 모든 형태의 파일을 의미한다.  
+
+상세 설명은 [오브젝트 스토리지 서비스개요](https://docs.openstack.org/mitaka/ko_KR/install-guide-rdo/common/get_started_object_storage.html)를 참조
+
+## 1.2. 옵션 서비스
+
+**Heat**  
 오케스트레이션 서비스를 담당한다.  
 오케스트레이션이란 확장/축소를 조절한다는 의미로서 사용된다.  
 OpenStack 뿐만아니라 다른 플랫폼(AWS,GCP,Kubernetes)에서도  
@@ -50,62 +95,21 @@ OpenStack 뿐만아니라 다른 플랫폼(AWS,GCP,Kubernetes)에서도
 OpenStack 에서는 인프라 전반에 걸친 그룹 배포가 가능하다.
 Heat는 yaml코드로 관리된다.
 
-AWS의 AutoScale에 해당한다.  
+상세 설명은 [Orchestration 서비스 개요](https://docs.openstack.org/mitaka/ko_KR/install-guide-rdo/common/get_started_orchestration.html)를 참조.
 
-**Horizon**
-웹 기반의 GUI 인터페이스를 담당한다.  
-
-AWS의 EC2 Management Console에 해당한다.  
-
-**Ironic**
+**Ironic**  
 베어 메탈 프로비저닝 서비스를 담당한다.  
 
 베어 메탈이란 물리 서버를 의미한다.  
 Ironic을 통해 하드웨어를 컨트롤 할 수 있다.  
 
-AWS의 EC2 Bare Metal 에 해당한다.  
-
-**Keystone**
-ID서비스를 담당한다.  
-
-모든 OpenStack 서비스에 인증 및 권한 부여/확인을 하며,  
-사용자, 도메인, 역할, 프로젝트를 관리하는 역할을 한다.  
-
-LDAP 연동을 통해 조직의 IDM을 통합할 수 있다.  
-
-AWS의 iam,Organizations 에 해당한다.  
-
-**Neutron**
-네트워크 서비스를 담당한다.  
-네트워크, 서브넷, 유동IP를 만들 수 있으며  
-이는 곳 OpenStack에서 SDN 역할을 한다.  
-
-OpenvSwitch, OVN이 함께 사용된다.  
-
-AWS의 VPC 에 해당한다.  
-
-**Nova**
-컴퓨팅 서비스를 담당한다.  
-Nova를 통해 가상환경을 제공 받을수 있으며,  
-하이퍼바이저에 libvirtd, qemu, kvm을 사용한다.  
-
-NoVNC와 연동하여 웹을 통한 인스턴스 연결이 가능하다.  
-
-AWS의 EC2 에 해당한다.  
-
-**Swift**
-오브젝트 스토리지를 제공한다.  
-데이터 백업에 유용하다.  
-
-AWS의 S3에 해당한다.  
-
-**Ceph**
+**Ceph**  
 분산 데이터 오브젝트 저장소 역할을 한다.  
-Ceph 클러스터링을 통해 데이터 손실을 최소화 하고 용량 확장이 쉽다.  
+Ceph 클러스터링을 통해 용량 확장, 장애 복구가 쉽다는 장점이 있다.  
 
-AWS의 S3에 해당한다.  
+파일, 블록, 오브젝트 와 같이 다양한 형태로 데이터 저장, 이용을 할 수 있다.  
 
-**Manila**
+**Manila**  
 공유 파일 시스템 서비스로서 파일 공유 서버 역할을 한다.  
 쉽게 말하면 공유 서버로서 이용 가능하다.  
 
@@ -114,7 +118,7 @@ Manila - Ceph 를 연동하면 기존 Nova 인스턴스를 재활용하여
 
 AWS의 EFS(Elastic File System) 에 해당한다.  
 
-**TripleO**
+**TripleO**  
 OpenStack의 배포를 담당한다.  
 배포 툴로 Ansible,Puppet을 사용하며,
 기존에 짜여진 yaml코드를 재활용하여
@@ -167,13 +171,13 @@ demo-org
 +-------------+----------------------------------+
 ```
   
-**도메인 삭제**
+**도메인 삭제**  
 ```
 [student@workstation ~(admin)]$ openstack domain delete MyCorp
 [student@workstation ~(admin)]$
 ```
   
-**도메인 리스트출력**
+**도메인 리스트출력**  
 ```
 [student@workstation ~(admin)]$ openstack domain list
 +----------------------------------+------------+---------+--------------------+
@@ -184,7 +188,7 @@ demo-org
 ```
   
 ## 2.3. 유저관리
-**유저 생성**
+**유저 생성**  
 ```
 [student@workstation ~(admin)]$ openstack user create \
 > --domain MyCorp \
@@ -202,7 +206,7 @@ demo-org
 +---------------------+----------------------------------+
 ```
   
-**유저 삭제**
+**유저 삭제**  
 ```
 [student@workstation ~(admin)]$ openstack user delete \
 > developer1 --domain MyCorp
@@ -213,7 +217,7 @@ demo-org
 +----------------------------------+------------+
 ```
   
-**유저 리스트출력**
+**유저 리스트출력**  
 ```
 [student@workstation ~(admin)]$ openstack user list --domain MyCorp
 +----------------------------------+------------+
@@ -285,7 +289,7 @@ MyTest (부모)
 --effective : 부모-자식구조에서 지정해줘야 할당내용이 보인다. 생각보다 중요하니 비교해보는것을 추천  
 
 
-**역할 삭제**
+**역할 삭제**  
 ```
 [student@workstation ~(admin)]$ openstack role delete \
 > --user-domain MyCorp \
@@ -295,7 +299,7 @@ MyTest (부모)
 > member
 ```
 
-**역할 리스트출력**
+**역할 리스트출력**  
 ```
 [student@workstation ~(admin)]$ openstack role list
 +----------------------------------+---------------+
@@ -309,7 +313,7 @@ MyTest (부모)
 +----------------------------------+---------------+
 ```
 
-**할당된 역할출력**
+**할당된 역할출력**  
 ```
 [student@workstation ~(admin)]$ openstack role assignment list \
 > --effective \
@@ -325,7 +329,7 @@ MyTest (부모)
 ```
 
 ## 2.5. 할당량 관리
-**프로젝트 할당량보기**
+**프로젝트 할당량보기**  
 ```
 [student@workstation ~(operator1-research)]$ openstack quota show \
 > -c cores -c ram -c instances research
@@ -338,7 +342,7 @@ MyTest (부모)
 +-----------+-------+
 ```
 
-**프로젝트 할당량 설정**
+**프로젝트 할당량 설정**  
 ```
 [student@workstation ~(operator1-research)]$ openstack quota set \
 > --cores 5 \
@@ -349,7 +353,9 @@ MyTest (부모)
 ```
 
 # 3. 네트워크 관리
-## 3.1. 네트워크 기술개요
+## 3.1. 네트워크 기술개요  
+![Neutron 아키텍쳐](https://docs.openstack.org/security-guide/_images/sdn-connections.png "Neutron 아키텍쳐")
+![OpenStack 구성예시](https://docs.openstack.org/security-guide/_images/1aa-network-domains-diagram.png "OpenStack 구성예시")
 ## 3.2. 네트워크 관리
 ### 3.2.1. 역할에 따른 출력차이
 **Member 역할일때**  
@@ -400,7 +406,7 @@ MyTest (부모)
 역할에 따라 정보가 제한되는것을 알 수 있다.  
 
 ### 3.2.2. 네트워크 
-**서브넷 정보출력**
+**서브넷 정보출력**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack subnet show \
 > 66b8efce-51d5-48ca-8e5f-bbef8b5ef58f --max-width 80
@@ -721,7 +727,7 @@ patch-provnet-"network id"-to-"connected port"
 
 # 4. 리소스 관리
 ## 4.1. 이미지 
-**이미지 등록**
+**이미지 등록**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack image create \ 
 > --disk-format qcow2 \
@@ -730,7 +736,7 @@ patch-provnet-"network id"-to-"connected port"
 ...output omitted...
 ```
   
-**이미지 정보출력**
+**이미지 정보출력**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack image show \
 > rhel8-dbsmall --max-width 80
@@ -766,7 +772,7 @@ patch-provnet-"network id"-to-"connected port"
 +------------------+-----------------------------------------------------------+
 ```
 
-**이미지 설정변경**
+**이미지 설정변경**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack image set \
 > --protected \
@@ -847,7 +853,7 @@ Failed to delete 1 of 1 images.
 - ephemeral : ephemeral disk(임시 디스크) 할당 용량 *예시: Windows D:\ 드라이버*
 - swap      : 스왑 메모리 할당 용량
 
-**인스턴스 시작**
+**인스턴스 시작**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack server create \
 > --image rhel8 \
@@ -887,7 +893,7 @@ Failed to delete 1 of 1 images.
 +-----------------------------+----------------------------------------+
 ```
 
-**인스턴스 콘솔접속**
+**인스턴스 콘솔접속**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack console url \
 > show Test-Instance
@@ -901,7 +907,7 @@ Failed to delete 1 of 1 images.
 
 # 5. 디스크 구성
 ## 5.1 임시 디스크
-**flavor - ephemeral**
+**flavor - ephemeral**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack flavor create \
 > --ram 2048 \
@@ -924,7 +930,7 @@ Failed to delete 1 of 1 images.
 }
 ```
 ## 5.2 영구 디스크
-**이미지 볼륨 생성**
+**이미지 볼륨 생성**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack volume create \
 > --size 10 \
@@ -955,7 +961,7 @@ Failed to delete 1 of 1 images.
 +---------------------+---------------------------------------+
 ```
 
-**데이터 볼륨생성**
+**데이터 볼륨생성**  
 ```
 [student@workstation ~ (developer1-finance)]$ openstack volume create \ 
 > --size 1 finance-volume1
@@ -984,7 +990,7 @@ Failed to delete 1 of 1 images.
 +---------------------+---------------------------------------------+
 ```
 
-**볼륨 상태**
+**볼륨 상태**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack volume list \
 > -c Name -c Status
@@ -995,7 +1001,7 @@ Failed to delete 1 of 1 images.
 +-------------------+-----------+
 ```
 
-**이미지 볼륨으로 인스턴스 시작하기**
+**이미지 볼륨으로 인스턴스 시작하기**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack server create \
 > --flavor default \
@@ -1035,7 +1041,7 @@ Failed to delete 1 of 1 images.
 +-----------------------------+--------------------------------------+
 ```
 
-**할당 확인**
+**할당 확인**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack volume list \
 > -c Name -c Status
@@ -1047,14 +1053,14 @@ Failed to delete 1 of 1 images.
 +-------------------+-----------+
 ```
 
-**데이터 볼륨 할당**
+**데이터 볼륨 할당**  
 ```
 [student@workstation ~ (developer1-finance)]$ openstack server add volume \
 > finance-server10 finance-volume1
 [student@workstation ~(developer1-finance)]$ 
 ```
 
-**스냅샷 이미지 생성**
+**스냅샷 이미지 생성**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack server image create \
 > --name finance-server10-snapshot \
@@ -1081,7 +1087,7 @@ Failed to delete 1 of 1 images.
 +------------------+-------------------------------------------------------------+
 ```
 
-**스냅샷 이미지로 인스턴스 시작**
+**스냅샷 이미지로 인스턴스 시작**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack server create \
 > --image finance-server10-snapshot \
@@ -1126,7 +1132,7 @@ Failed to delete 1 of 1 images.
 +-----------------------------+--------------------------------------------------+
 ```
 
-**볼륨 스냅샷 제거**
+**볼륨 스냅샷 제거**  
 ```
 [student@workstation ~(developer1-finance)]$ openstack volume snapshot list
 +-----------------------+-----------------------+-------------+-----------+------+
@@ -1143,7 +1149,7 @@ Failed to delete 1 of 1 images.
 # 6. 스토리지 구성
 ## 6.1 오브젝트 스토리지
 ### 6.1.1. SWIFT
-**컨테이너 생성**
+**컨테이너 생성**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack container create \
 > finance-container1
@@ -1154,7 +1160,7 @@ Failed to delete 1 of 1 images.
 +-------------------+--------------------+-------------+
 ```
 
-**컨테이너 리스트**
+**컨테이너 리스트**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack container list
 +--------------------+
@@ -1165,7 +1171,7 @@ Failed to delete 1 of 1 images.
 +--------------------+
 ```
 
-**파일 업로드**
+**파일 업로드**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack object create \
 > finance-container1/finance-data finance-rules
@@ -1176,7 +1182,7 @@ Failed to delete 1 of 1 images.
 +---------------+---------------------------------+-------------+
 ```
 
-**finance-cdr 컨테이너 오브젝트 리스트**
+**finance-cdr 컨테이너 오브젝트 리스트**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack object list \
 > finance-cdr
@@ -1188,7 +1194,7 @@ Failed to delete 1 of 1 images.
 
 ```
 
-**오브젝트 세부정보**
+**오브젝트 세부정보**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack object show \
 > finance-cdr cdr//tmp/cdr.19Jun20
@@ -1205,7 +1211,7 @@ Failed to delete 1 of 1 images.
 +----------------+----------------------------------------+
 ```
 
-**오브젝트 다운로드**
+**오브젝트 다운로드**  
 ```
 [student@workstation ~(operator1-finance)]$ openstack object save \
 > --file /tmp/cdr.txt finance-cdr cdr//tmp/cdr.19Jun20
@@ -1215,7 +1221,7 @@ Failed to delete 1 of 1 images.
 ```
 
 ### 6.1.2. Manila 
-**NFS 공유 스토리지 - 타입생성**
+**NFS 공유 스토리지 - 타입생성**  
 ```
 [student@workstation ~(operator1-finance)]$ manila type-create cephfstype false
 +----------------------+--------------------------------------+
@@ -1231,7 +1237,7 @@ Failed to delete 1 of 1 images.
 +----------------------+--------------------------------------+
 ```
 
-**NFS 공유 스토리지 - 공유생성**
+**NFS 공유 스토리지 - 공유생성**  
 ```
 [student@workstation ~(developer1-finance)]$ manila create \
 > --name finance-share1 --share-type cephfstype cephfs 1
@@ -1254,7 +1260,7 @@ Failed to delete 1 of 1 images.
 +----------------+-------------+-----------+-----------------+
 ```
 
-**cephx 유저 키 파일 생성**
+**cephx 유저 키 파일 생성**  
 ```
 [root@controller0 ~]# podman exec -t \
 > ceph-mon-controller0 ceph --name=client.manila \
@@ -1262,7 +1268,7 @@ Failed to delete 1 of 1 images.
 > auth get-or-create client.cloud-user > /root/cloud-user.keyring
 ```
 
-**인스턴스로 파일 복사**
+**인스턴스로 파일 복사**  
 ```
 [student@workstation manila(developer1-finance)]$ scp \
 > {cloud-user.keyring,ceph.conf} cloud-user@172.25.250.122:
@@ -1271,7 +1277,7 @@ cloud-user.keyring    100%   70    43.5KB/s   00:00
 ceph.conf             100%  941   729.7KB/s   00:00
 ```
 
-**공유 접근 권한 할당**
+**공유 접근 권한 할당**  
 ```
 [student@workstation ~(developer1-finance)]$ manila access-allow \
 > finance-share1 cephx cloud-user
@@ -1298,7 +1304,7 @@ ceph.conf             100%  941   729.7KB/s   00:00
 +------------+--------------+--------+
 ```
 
-**공유 액세스 포인트**
+**공유 액세스 포인트**  
 ```
 [student@workstation ~]$ source ~/developer1-finance-rc
 [student@workstation ~(developer1-finance)]$ manila share-export-location-list \ 
@@ -1310,7 +1316,7 @@ ceph.conf             100%  941   729.7KB/s   00:00
 +------------------------------------------------------------------------+
 ```
 
-**인스턴스 설정**
+**인스턴스 설정**  
 ```
 [root@finance-server6 ~]# curl -s -f \
 > -o /etc/yum.repos.d/ceph.repo http://materials.example.com/ceph.repo
@@ -1331,13 +1337,13 @@ Complete!
 ...output omitted...
 ceph-fuse      fuse.ceph-fuse  1.0G     0  1.0G   0% /mnt/ceph
 ```
-# 마지막으로
+# 마치며
 정리하면서 느끼는거지만 오픈스택 정말 어려운것 같다.  
 어떻게 시험 합격했는지 모르겠다...  
 관리자 관점에서도 어려운데 솔루션은 얼마나 어려울지...  
 가능하면 퍼블릭 클라우드 사용하는게 정신건강에 좋을것 같다.  
 
-# 참고사항 - CL210 과정에 추가되는것들
+**참고사항 - CL210 과정에 추가되는것들**  
 - RC파일관리
 - IDM통합
 - 컨트롤 플레인 백업
