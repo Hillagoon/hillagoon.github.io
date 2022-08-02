@@ -14,7 +14,14 @@
     }
 }
 
-@media ( max-width: 1400px or max-height: 800px ) {
+@media ( max-width: 1400px ) {
+    .post-nav {
+        display: none;
+    }
+}
+
+
+@media ( max-height: 800px ) {
     .post-nav {
         display: none;
     }
