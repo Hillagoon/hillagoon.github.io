@@ -5,7 +5,7 @@ categories:
   - Container
 tags:
   - Podman
-  - Containerfile
+  - Virtualization
 ---
 
 # 개요
@@ -128,11 +128,14 @@ CONTAINER ID  IMAGE        COMMAND     CREATED  STATUS        PORTS  NAMES
 
 **스토리지 연결**  
 1. 디렉토리 생성
+
+
 ```
 [student@workstation ~]$ mkdir -p /home/student/local/vol
 ```
 
 2. 디렉토리 권한변경
+
 ```
 [student@workstation ~]$ podman unshare chown 27:27 /home/student/local/vol
 ```
@@ -149,7 +152,7 @@ drwxr-x---. 2 100026 100026 6 Apr  8 07:31 /home/student/local/vol/item... <- ui
 
 3. SELinux 컨테이너 정책 추가
 
-**영구 등록시**
+**영구 등록시**  
 ```
 [student@workstation ~]$ sudo semanage fcontext -a \
 > -t container_file_t '/home/student/local/vol(/.*)?'
@@ -157,23 +160,26 @@ drwxr-x---. 2 100026 100026 6 Apr  8 07:31 /home/student/local/vol/item... <- ui
 
 semanage fcontext -l 로 등록된 정책 확인 가능  
 
-**일시 등록시**
+**일시 등록시**  
 ```
 [student@workstation ~]$ sudo chcon -t container_file_t /home/student/local/vol
 ```
 
 4. SELinux 정책 적용
+
 ```
 [student@workstation ~]$ sudo restorecon -R /home/student/local/vol
 ```
 
 5. 정책 확인
+
 ```
 [student@workstation ~]$ ls -ldZ /home/student/local/vol
 drwxrwxr-x. 2 student student unconfined_u:object_r:container_file_t:s0 6 May 26 14:33 /home/student/local/vol
 ```
 
 6. 볼륨 연결
+
 ```
 [student@workstation ~]$ podman run ... -v /home/student/local/vol:/myvol
 6e0ef134315b510042ca757faf869f2ba19df27790c601f95ec2fd9d3c44b95d
@@ -238,7 +244,7 @@ registries = ['localhost:5000'] <-프라이빗 레지스트리 설정
 [user@host ~]$ podman rmi registry.redhat.io/rhel8/mysql-80
 ```
 
-**이미지 변경비교**
+**이미지 변경비교**  
 ```
 [user@host ~]$ podman diff mysql-basic
 C /run
@@ -249,14 +255,14 @@ A /run/mysqld/mysqld.sock.lock
 A /run/secrets
 ```
 
-**이미지 커밋하기**
+**이미지 커밋하기**  
 ```
 [user@host ~]$ podman commit mysql-basic  mysql-custom
 ```
 
 커밋은 이미지를 제작하면 쌓아온 레이어를 하나로 합친다.  
 
-**이미지 태그지정**
+**이미지 태그지정**   
 ```
 [user@host ~]$ podman tag mysql-custom devops/mysql
 ```
@@ -264,7 +270,6 @@ A /run/secrets
 태깅은 현재까지의 작업내용을 지정한 태그로 레이어 쌓는다고 보면된다.  
 
 ## 컨테이너 이미지 설계
-### Containerfile
 **예시**  
 ```
 # This is a comment line 1
@@ -292,7 +297,7 @@ CMD ["-D", "FOREGROUND"]
 - ENTRYPOINT ... 컨테이너 실행시 기본 작업디렉토리
 - CMD ... 컨테이너의 실행시 기본 실행작업
 
-**이미지 빌드**
+**이미지 빌드**  
 ```
 [student@workstation dockerfile-create]$ podman build --layers=false \
 > -t do180/apache .
