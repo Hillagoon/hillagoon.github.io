@@ -127,14 +127,14 @@ CONTAINER ID  IMAGE        COMMAND     CREATED  STATUS        PORTS  NAMES
 ```
 
 **스토리지 연결**  
-1. 디렉토리 생성
+1.디렉토리 생성
 
 
 ```
 [student@workstation ~]$ mkdir -p /home/student/local/vol
 ```
 
-2. 디렉토리 권한변경
+2.디렉토리 권한변경
 
 ```
 [student@workstation ~]$ podman unshare chown 27:27 /home/student/local/vol
@@ -150,7 +150,7 @@ drwxr-x---. 2 100026 100026 6 Apr  8 07:31 /home/student/local/vol/item... <- ui
 ```
 
 
-3. SELinux 컨테이너 정책 추가
+3.SELinux 컨테이너 정책 추가
 
 **영구 등록시**  
 ```
@@ -165,20 +165,20 @@ semanage fcontext -l 로 등록된 정책 확인 가능
 [student@workstation ~]$ sudo chcon -t container_file_t /home/student/local/vol
 ```
 
-4. SELinux 정책 적용
+4.SELinux 정책 적용
 
 ```
 [student@workstation ~]$ sudo restorecon -R /home/student/local/vol
 ```
 
-5. 정책 확인
+5.정책 확인
 
 ```
 [student@workstation ~]$ ls -ldZ /home/student/local/vol
 drwxrwxr-x. 2 student student unconfined_u:object_r:container_file_t:s0 6 May 26 14:33 /home/student/local/vol
 ```
 
-6. 볼륨 연결
+6.볼륨 연결
 
 ```
 [student@workstation ~]$ podman run ... -v /home/student/local/vol:/myvol
