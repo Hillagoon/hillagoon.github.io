@@ -201,12 +201,12 @@ drwxrwxr-x. 2 student student unconfined_u:object_r:container_file_t:s0 6 May 26
 281c0e2790e54cd5a0b8e2a8cb6e3969981b85cde8ac611bf7ea98ff78bdffbb
 ```
 
-## 레지스트리 관리
-### 공개 레지스트리
+### 레지스트리 관리
+**공개 레지스트리**
 - Quay.io
 - RedHat Container Catalog
 
-### 프라이빗 레지스트리
+**프라이빗 레지스트리**
 ```
 vi /etc/containers/registries.conf
 ...
@@ -269,7 +269,7 @@ A /run/secrets
 
 태깅은 현재까지의 작업내용을 지정한 태그로 레이어 쌓는다고 보면된다.  
 
-## 컨테이너 이미지 설계
+### 컨테이너 이미지 설계
 **예시**  
 ```
 # This is a comment line 1
