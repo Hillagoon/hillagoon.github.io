@@ -39,8 +39,8 @@ tags:
 ## 컨테이너 런타임
 "[여기](https://www.samsungsds.com/kr/insights/docker.html)" 참조
 
-## 예시
-### 컨테이너 생성
+# 실습정리
+## 컨테이너 생성
 ```
 [user@host ~]$ podman run registry.redhat.io/rhel8/httpd-24
 Trying to pull registry.redhat.io/rhel8/httpd-24...
@@ -72,7 +72,7 @@ CONTAINER ID    IMAGE                 COMMAND                ... NAMES
 
 기존에 실행중인 컨테이너는 podman run을 podman exec로 바꾸면된다.  
 
-### 컨테이너 관리
+## 컨테이너 관리
 **실행중인 컨테이너**  
 ```
 [user@host ~]$ podman ps
@@ -201,7 +201,7 @@ drwxrwxr-x. 2 student student unconfined_u:object_r:container_file_t:s0 6 May 26
 281c0e2790e54cd5a0b8e2a8cb6e3969981b85cde8ac611bf7ea98ff78bdffbb
 ```
 
-### 레지스트리 관리
+## 레지스트리 관리
 **공개 레지스트리**
 - Quay.io
 - RedHat Container Catalog
@@ -217,7 +217,7 @@ registries = ["registry.access.redhat.com", "quay.io"] <-공개 레지스트리 
 registries = ['localhost:5000'] <-프라이빗 레지스트리 설정
 ```
 
-### 이미지 관리
+## 이미지 관리
 **이미지 가져오기**  
 ```
 [user@host ~]$ podman pull quay.io/bitnami/nginx
@@ -269,7 +269,7 @@ A /run/secrets
 
 태깅은 현재까지의 작업내용을 지정한 태그로 레이어 쌓는다고 보면된다.  
 
-### 컨테이너 이미지 설계
+## 컨테이너 이미지 설계
 **예시**  
 ```
 # This is a comment line 1
@@ -292,10 +292,10 @@ CMD ["-D", "FOREGROUND"]
 - EXPOSE ... 네트워크 포트 노출
 - ENV ... 환경변수
 - ADD ... 파일 복사 지정
-- COPY ... 파일 복사 지정, 폴더지정지 폴더 복사가 아닌 하위 파일을 재귀적으로 가져옴
+- COPY ... 파일 복사 지정, 폴더지정지 폴더 복사가 아닌 하위 파일을 재귀적으로 가져옴, bzip2,gzip2 압축파일을 지정 위치에 압축해제 상태로 가져옴
 - USER ... 실행 유저권한
-- ENTRYPOINT ... 컨테이너 실행시 기본 작업디렉토리
-- CMD ... 컨테이너의 실행시 기본 실행작업
+- ENTRYPOINT ... 컨테이너 실행시 기본값으로 실행되는 스크립트 혹은 프로그램 지정, 디렉토리 지정도 가능
+- CMD ... ENTRYPOINT에서 실행하는 스크립트, 프로그램의 기본 옵션. podman exec -it ... <명령어> << 명령어 지정이 없을때의 기본값.
 
 **이미지 빌드**  
 ```
