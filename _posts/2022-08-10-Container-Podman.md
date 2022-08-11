@@ -6,7 +6,8 @@ categories:
 tags:
   - Podman
   - Virtualization
-  - CL180
+  - OSS
+  - RHLS_CL180
 ---
 
 # 개요
