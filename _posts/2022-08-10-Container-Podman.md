@@ -1,11 +1,12 @@
 ---
-title: "Container/Podman 관리"
+title: "Container/Podman 기술정리"
 last_modified_at: 2022-08-10T17:30:00-00:00
 categories:
   - Container
 tags:
   - Podman
   - Virtualization
+  - CL180
 ---
 
 # 개요
