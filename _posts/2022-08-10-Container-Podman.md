@@ -7,7 +7,7 @@ tags:
   - Podman
   - Virtualization
   - OSS
-  - RHLS_CL180
+  - RHLS_DO180
 ---
 
 # 개요
